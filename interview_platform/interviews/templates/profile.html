@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | AI Interview Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --secondary: #8b5cf6;
+        --light: #f8fafc;
+        --dark: #0f172a;
+        --gray: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+        --danger: #ef4444;
+        --success: #10b981;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: #f8fafc;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      /* Toast Notification Styles */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 400px;
+      }
+
+      .toast {
+        background: rgba(30, 41, 59, 0.95);
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        border-left: 4px solid var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transform: translateX(110%);
+        transition: transform 0.3s ease-out;
+        backdrop-filter: blur(10px);
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        border-color: var(--success);
+      }
+
+      .toast.error {
+        border-color: var(--danger);
+      }
+
+      .toast-icon {
+        font-size: 24px;
+        min-width: 24px;
+      }
+
+      .toast.success .toast-icon {
+        color: var(--success);
+      }
+
+      .toast.error .toast-icon {
+        color: var(--danger);
+      }
+
+      .toast-content {
+        flex-grow: 1;
+      }
+
+      .toast-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .toast-message {
+        font-size: 14px;
+        color: #cbd5e1;
+      }
+
+      .toast-close {
+        background: transparent;
+        border: none;
+        color: var(--gray);
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+      }
+
+      .toast-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        background: rgba(30, 41, 59, 0.6);
+        padding: 30px 0;
+        height: 100%;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
+        margin-bottom: 40px;
+      }
+
+      .logo i {
+        font-size: 36px;
+        background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-right: 12px;
+      }
+
+      .logo h2 {
+        font-size: 18px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        padding: 16px 30px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 5px;
+        position: relative;
+      }
+
+      .nav-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .nav-item:hover {
+        background: rgba(67, 97, 238, 0.15);
+      }
+
+      .nav-item:hover::before {
+        opacity: 1;
+      }
+
+      .nav-item.active {
+        background: rgba(67, 97, 238, 0.2);
+      }
+
+      .nav-item.active::before {
+        opacity: 1;
+      }
+
+      .nav-item i {
+        margin-right: 15px;
+        color: #c4b5fd;
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+      }
+
+      .nav-item.active i {
+        color: var(--primary);
+      }
+
+      .nav-item a {
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        color: #e2e8f0;
+      }
+
+      /* Main Content Styles */
+      .main-content {
+        padding: 30px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        color: #f8fafc;
+        font-weight: 700;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logout-btn {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .logout-btn:hover {
+        background: rgba(239, 68, 68, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .logout-btn i {
+        font-size: 16px;
+      }
+
+      /* Profile Container */
+      .profile-container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+      }
+
+      /* Profile Card */
+      .profile-card {
+        background: rgba(30, 41, 59, 0.6);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+        height: fit-content;
+        position: relative;
+      }
+
+      /* Profile picture container */
+      .profile-picture-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 20px;
+      }
+
+      .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(67, 97, 238, 0.3);
+      }
+
+      /* Camera button */
+      .change-profile-picture-btn {
+        position: absolute;
+        bottom: -8px;
+        left: 40%;
+        right: 8px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s;
+      }
+
+      .change-profile-picture-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+      }
+
+      .change-profile-picture-btn i {
+        font-size: 16px;
+      }
+
+      .profile-name {
+        font-size: 22px;
+        margin-bottom: 5px;
+        color: #f8fafc;
+      }
+
+      .profile-title {
+        color: var(--gray);
+        margin-bottom: 20px;
+        font-size: 16px;
+      }
+
+      .profile-stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 25px 0;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #a5b4fc;
+      }
+
+      .stat-label {
+        font-size: 13px;
+        color: var(--gray);
+      }
+
+      .edit-profile-btn {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .edit-profile-btn:hover {
+        background: linear-gradient(135deg, #5659e6, #7a4deee1);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      }
+
+      /* Profile Details */
+      .profile-details {
+        background: rgba(30, 41, 59, 0.6);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .section-title {
+        font-size: 20px;
+        margin-bottom: 25px;
+        color: #f8fafc;
+        display: flex;
+        align-items: center;
+      }
+
+      .section-title i {
+        margin-right: 12px;
+        color: var(--primary);
+        font-size: 24px;
+      }
+
+      .detail-group {
+        margin-bottom: 30px;
+      }
+
+      .detail-row {
+        display: flex;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .detail-label {
+        width: 200px;
+        font-weight: 500;
+        color: var(--gray);
+      }
+
+      .detail-value {
+        flex: 1;
+        color: #e2e8f0;
+        font-weight: 500;
+      }
+
+      /* Edit Form */
+      .edit-form {
+        display: none;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #cbd5e1;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 14px;
+        color: #f8fafc;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .btn {
+        padding: 10px 25px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #5659e6, #7a4deee1);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: #f87171;
+        border: 1px solid #f87171;
+      }
+
+      .btn-outline:hover {
+        background: rgba(239, 68, 68, 0.15);
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        .dashboard {
+          grid-template-columns: 80px 1fr;
+        }
+
+        .logo h2 {
+          display: none;
+        }
+
+        .logo {
+          justify-content: center;
+          padding: 0 10px;
+        }
+
+        .nav-item span {
+          display: none;
+        }
+
+        .nav-item {
+          justify-content: center;
+          padding: 18px 0;
+        }
+
+        .nav-item i {
+          margin-right: 0;
+          font-size: 20px;
+        }
+
+        .profile-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .header-actions {
+          flex-direction: column;
+          align-items: flex-end;
+        }
+
+        .logout-btn {
+          padding: 10px 15px;
+        }
+
+        .detail-row {
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .detail-label {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .header {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .header-actions {
+          width: 100%;
+          align-items: stretch;
+          gap: 10px;
+        }
+
+        .logout-btn {
+          justify-content: center;
+        }
+
+        .profile-picture {
+          width: 120px;
+          height: 120px;
+        }
+
+        .change-profile-picture-btn {
+          width: 32px;
+          height: 32px;
+          bottom: -6px;
+          right: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% load static %}
+    <div class="toast-container" id="toastContainer"></div>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">
+          <i class="fas fa-robot"></i>
+          <h2>InterviewAI</h2>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <i class="fas fa-home"></i>
+            <a style="text-decoration: none" href="{% url 'dashboard' %}">
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item active">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+            
+          </li>
+          <li class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <a href="{% url 'interviewReports' %}">
+              <span>Interview Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="header">
+          <h1>My Profile</h1>
+          <div class="header-actions">
+            <button class="logout-btn" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-container">
+          <!-- Profile Card -->
+          <div class="profile-card">
+            <div class="profile-picture-container">
+              <img
+                src="{{request.session.candidate_image}}"
+                alt="Profile Picture"
+                class="profile-picture"
+                id="profileImage"
+              />
+              <button
+                class="change-profile-picture-btn"
+                id="changeProfilePicBtn"
+              >
+                <i class="fas fa-camera"></i>
+              </button>
+              <input
+                type="file"
+                id="profileImageInput"
+                accept="image/*"
+                style="display: none"
+              />
+            </div>
+            <h2 class="profile-name">{{request.session.candidate_name}}</h2>
+            <p class="profile-title">{{request.session.candidate_degree}}</p>
+
+            <div class="profile-stats">
+              <div class="stat">
+                <div class="stat-value" id="no_of_interviews">
+                  {{no_of_interviews}}
+                </div>
+                <div class="stat-label">Interviews</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value" id="avg_score">{{average_score}}%</div>
+                <div class="stat-label">Avg Score</div>
+              </div>
+            </div>
+
+            <button class="edit-profile-btn" id="editProfileBtn">
+              <i class="fas fa-edit"></i> Edit Profile
+            </button>
+          </div>
+
+          <!-- Profile Details -->
+          <div class="profile-details">
+            <div class="detail-view">
+              <div class="detail-group">
+                <h2 class="section-title">
+                  <i class="fas fa-info-circle"></i>
+                  Personal Information
+                </h2>
+
+                <div class="detail-row">
+                  <div class="detail-label">Full Name:</div>
+                  <div class="detail-value" id="pname">
+                    {{request.session.candidate_name}}
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Email:</div>
+                  <div class="detail-value" id="pemail">
+                    {{request.session.candidate_email}}
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Phone:</div>
+                  <div class="detail-value" id="pphone">
+                    {{request.session.candidate_phone}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-group">
+                <h2 class="section-title">
+                  <i class="fas fa-briefcase"></i>
+                  Professional Information
+                </h2>
+
+                <div class="detail-row">
+                  <div class="detail-label">Degree:</div>
+                  <div class="detail-value" id="pdegree">
+                    {{request.session.candidate_degree}}
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Experience:</div>
+                  <div class="detail-value" id="pexp">
+                    {{request.session.candidate_experience}} years
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Job Domain:</div>
+                  <div class="detail-value" id="pjobDomain">
+                    {{request.session.candidate_job_domain}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Form (Hidden by default) -->
+            <div class="edit-form" id="editForm">
+              <h2 class="section-title">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+              </h2>
+
+              <form>
+                <div class="detail-group">
+                  <h3
+                    class="section-title"
+                    style="font-size: 18px; margin-bottom: 15px"
+                  >
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                  </h3>
+                  <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" />
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" readonly/>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" />
+                  </div>
+                </div>
+
+                <div class="detail-group">
+                  <h3
+                    class="section-title"
+                    style="font-size: 18px; margin-bottom: 15px"
+                  >
+                    <i class="fas fa-briefcase"></i>
+                    Professional Information
+                  </h3>
+                  <div class="form-group">
+                    <label for="degree">Degree</label>
+                    <input type="text" id="degree" />
+                  </div>
+                  <div class="form-group">
+                    <label for="experience">Experience</label>
+                    <input type="number" id="experience" min="0" step="1" />
+                  </div>
+                  <div class="form-group">
+                    <label for="jobDomain">Job Domain</label>
+                    <input type="text" id="jobDomain" />
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    id="cancelEditBtn"
+                  >
+                    <i class="fas fa-times"></i> Cancel
+                  </button>
+                  <button type="button" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Toast Notification System
+      function showToast(message, type = "info", duration = 5000) {
+        const toastContainer = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+                <div class="toast-icon">
+                    ${
+                      type === "success"
+                        ? '<i class="fas fa-check-circle"></i>'
+                        : type === "error"
+                        ? '<i class="fas fa-exclamation-circle"></i>'
+                        : '<i class="fas fa-info-circle"></i>'
+                    }
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${
+                      type.charAt(0).toUpperCase() + type.slice(1)
+                    }</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+        toastContainer.appendChild(toast);
+
+        // Show toast with animation
+        setTimeout(() => {
+          toast.classList.add("show");
+        }, 10);
+
+        // Close toast on button click
+        const closeBtn = toast.querySelector(".toast-close");
+        closeBtn.addEventListener("click", () => {
+          toast.classList.remove("show");
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        });
+
+        // Auto-remove toast after duration
+        setTimeout(() => {
+          if (toast.classList.contains("show")) {
+            toast.classList.remove("show");
+            setTimeout(() => {
+              toast.remove();
+            }, 300);
+          }
+        }, duration);
+      }
+
+
+
+      // CSRF token helper
+        function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+              cookie = cookie.trim();
+              if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+                );
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+
+      // Toggle between view and edit modes
+      const editProfileBtn = document.getElementById("editProfileBtn");
+      const cancelEditBtn = document.getElementById("cancelEditBtn");
+      const editForm = document.getElementById("editForm");
+      const detailView = document.querySelector(".detail-view");
+
+      editProfileBtn.addEventListener("click", () => {
+        detailView.style.display = "none";
+        editForm.style.display = "block";
+
+        // get all the values from the detail view and set them in the edit form
+        const name = document.getElementById("pname").innerText.trim();
+        const email = document.getElementById("pemail").innerText.trim();
+        const phone = document.getElementById("pphone").innerText.trim();
+        const degree = document.getElementById("pdegree").innerText.trim();
+        const experience = document.getElementById("pexp").innerText.replace(" years", "").trim();
+        const jobDomain = document.getElementById("pjobDomain").innerText.trim();
+
+        document.getElementById("fullName").value = name;
+        document.getElementById("email").value = email;
+        document.getElementById("phone").value = phone;
+        document.getElementById("degree").value = degree;
+        document.getElementById("experience").value = experience;
+        document.getElementById("jobDomain").value = jobDomain;
+      });
+
+      cancelEditBtn.addEventListener("click", () => {
+        detailView.style.display = "block";
+        editForm.style.display = "none";
+      });
+
+      function logout() {
+        showToast("You have been logged out successfully.", "success");
+        setTimeout(() => {
+          window.location.href = "{% url 'logout' %}";
+        }, 1500);
+      }
+
+      // Profile image upload functionality
+      const changeProfilePicBtn = document.getElementById(
+        "changeProfilePicBtn"
+      );
+      const profileImageInput = document.getElementById("profileImageInput");
+      const profileImage = document.getElementById("profileImage");
+
+      changeProfilePicBtn.addEventListener("click", () => {
+        profileImageInput.click();
+      });
+
+      profileImageInput.addEventListener("change", function (e) {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+
+          // Validate file type
+          if (!file.type.match("image.*")) {
+            showToast(
+              "Please select a valid image file (JPEG, PNG, etc.)",
+              "error"
+            );
+            return;
+          }
+
+          // Validate file size (max 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            showToast("Image size exceeds 5MB limit", "error");
+            return;
+          }
+
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            // Show preview of the new image immediately
+            // profileImage.src = e.target.result;
+            showToast("Uploading image...", "info");
+
+            // Prepare FormData to send to backend
+            const formData = new FormData();
+            formData.append("image", file); // Key name must match your Django model field
+
+            // Send to backend
+            fetch("{% url 'updateProfileImage' %}", {
+              method: "POST",
+              body: formData,
+              headers: {
+                "X-CSRFToken": getCookie("csrftoken"), // CSRF token for Django
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.message) {
+                  showToast("Profile image updated successfully!", "success");
+                } else {
+                  showToast(
+                    data.error || "Failed to update profile image",
+                    "error"
+                  );
+                }
+              })
+              .catch((err) => {
+                console.error("Error:", err);
+                showToast("Error uploading image", "error");
+              });
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const saveBtn = document.querySelector(".btn.btn-primary");
+
+        // Store original values for comparison
+        const originalData = {
+          fullName: document.getElementById("pname").innerText.trim(),
+          email: document.getElementById("pemail").innerText.trim(),
+          phone: document.getElementById("pphone").innerText.trim(),
+          degree: document.getElementById("pdegree").innerText.trim(),
+          experience: document
+            .getElementById("pexp")
+            .innerText.trim()
+            .replace(" years", ""),
+          jobDomain: document.getElementById("pjobDomain").innerText.trim(),
+        };
+
+        saveBtn.addEventListener("click", function () {
+          // Get new values from form
+          const newData = {
+            fullName: document.getElementById("fullName").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            degree: document.getElementById("degree").value.trim(),
+            experience: document.getElementById("experience").value.trim(),
+            jobDomain: document.getElementById("jobDomain").value.trim(),
+          };
+
+          // 1️⃣ Validate fields
+          if (
+            !newData.fullName ||
+            !newData.email ||
+            !newData.phone ||
+            !newData.degree ||
+            !newData.experience ||
+            !newData.jobDomain
+          ) {
+            showToast("All fields are required.", "error");
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newData.email)) {
+            showToast("Invalid email format.", "error");
+            return;
+          }
+          if (!/^\d{10,15}$/.test(newData.phone)) {
+            showToast("Phone must be 10-15 digits.", "error");
+            return;
+          }
+          if (isNaN(newData.experience) || newData.experience < 0) {
+            showToast("Experience must be a valid number.", "error");
+            return;
+          }
+
+          // 2️⃣ Check if data changed
+          let isChanged = false;
+          for (let key in originalData) {
+            if (originalData[key] !== newData[key]) {
+              isChanged = true;
+              break;
+            }
+          }
+          if (!isChanged) {
+            detailView.style.display = "block";
+            editForm.style.display = "none";
+            return;
+          }
+
+          // 3️⃣ Send data to backend
+          fetch("{% url 'updateProfile' %}", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"), // CSRF token for Django
+            },
+            body: JSON.stringify(newData),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                showToast("Profile updated successfully!", "success");
+                setTimeout(() => location.reload(), 1500);
+              } else {
+                showToast("Failed to update profile.", "error");
+              }
+            })
+            .catch((err) => {
+              console.error("Error:", err);
+              showToast("Something went wrong.", "error");
+            });
+        });
+
+        
+      });
+    </script>
+  </body>
+</html>

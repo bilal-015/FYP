@@ -1,0 +1,11 @@
+# FastAPI server
+fastapi
+uvicorn
+
+# Hugging Face & PyTorch
+transformers
+torch
+
+# Optional (faster tokenizer + safety)
+tokenizers
+safetensors

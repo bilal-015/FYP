@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confidence Assessment | AI Interview Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --secondary: #8b5cf6;
+        --light: #f8fafc;
+        --dark: #0f172a;
+        --gray: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+        --danger: #ef4444;
+        --success: #10b981;
+        --warning: #f59e0b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        min-height: 100vh;
+        color: #f8fafc;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Toast Notification Styles */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 400px;
+      }
+
+      .toast {
+        background: rgba(30, 41, 59, 0.95);
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        border-left: 4px solid var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transform: translateX(110%);
+        transition: transform 0.3s ease-out;
+        backdrop-filter: blur(10px);
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        border-color: var(--success);
+      }
+
+      .toast.error {
+        border-color: var(--danger);
+      }
+
+      .toast-icon {
+        font-size: 24px;
+        min-width: 24px;
+      }
+
+      .toast.success .toast-icon {
+        color: var(--success);
+      }
+
+      .toast.error .toast-icon {
+        color: var(--danger);
+      }
+
+      .toast-content {
+        flex-grow: 1;
+      }
+
+      .toast-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .toast-message {
+        font-size: 14px;
+        color: #cbd5e1;
+      }
+
+      .toast-close {
+        background: transparent;
+        border: none;
+        color: var(--gray);
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+      }
+
+      .toast-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .assessment-container {
+        max-width: 900px;
+        width: 100%;
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .assessment-header {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        padding: 25px 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .assessment-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        z-index: 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 10px;
+      }
+
+      .logo i {
+        font-size: 36px;
+        background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .logo h1 {
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .header-text {
+        font-size: 18px;
+        color: #c7d2fe;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .assessment-content {
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .instructions-box {
+        background: rgba(30, 41, 59, 0.6);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        width: 100%;
+        max-width: 700px;
+      }
+
+      .instructions-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+
+      .instructions-title i {
+        color: #6366f1;
+      }
+
+      .instructions-content {
+        color: #cbd5e1;
+        line-height: 1.7;
+        text-align: center;
+      }
+
+      .instructions-content ul {
+        text-align: left;
+        padding-left: 25px;
+        margin: 15px 0;
+        display: inline-block;
+      }
+
+      .instructions-content li {
+        margin-bottom: 12px;
+        max-width: 600px;
+      }
+
+      .camera-box {
+        background: rgba(30, 41, 59, 0.6);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .camera-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .camera-title i {
+        color: #6366f1;
+      }
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: #0f172a;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 25px;
+      }
+
+      #videoElement {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .camera-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(15, 23, 42, 0.9);
+        color: #94a3b8;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .camera-placeholder i {
+        font-size: 60px;
+        margin-bottom: 20px;
+        color: #6366f1;
+      }
+
+      .camera-controls {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .control-btn {
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+        border: none;
+        min-width: 220px;
+        justify-content: center;
+      }
+
+      .start-btn {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+      }
+
+      .start-btn:hover {
+        background: linear-gradient(135deg, #0da271, #2bbd88);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+      }
+
+      .stop-btn {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+      }
+
+      .stop-btn:hover {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+      }
+
+      .submit-btn:hover {
+        background: linear-gradient(135deg, #5659e6, #7a4dee);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      }
+
+      .timer-container {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 16px;
+        padding: 15px 35px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 10px;
+      }
+
+      .timer-icon {
+        font-size: 28px;
+        color: #f87171;
+      }
+
+      .timer-text {
+        font-size: 24px;
+        font-weight: 700;
+        color: #f8fafc;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .assessment-footer {
+        padding: 25px 40px;
+        background: rgba(30, 41, 59, 0.8);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+        color: #94a3b8;
+      }
+
+      .time-warning {
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          color: #f8fafc;
+        }
+        50% {
+          color: #f87171;
+        }
+        100% {
+          color: #f8fafc;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .assessment-header,
+        .assessment-content,
+        .assessment-footer {
+          padding: 20px;
+        }
+
+        .video-container {
+          height: 300px;
+        }
+
+        .control-btn {
+          width: 100%;
+          padding: 14px;
+        }
+
+        .camera-controls {
+          gap: 15px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .video-container {
+          height: 250px;
+        }
+
+        .timer-container {
+          padding: 12px 25px;
+        }
+
+        .timer-text {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toast-container" id="toastContainer">
+      <!-- Toast notifications will be added here dynamically -->
+    </div>
+    
+    <div class="assessment-container">
+      <!-- Assessment Header -->
+      <div class="assessment-header">
+        <div class="logo">
+          <i class="fas fa-robot"></i>
+          <h1>InterviewAI</h1>
+        </div>
+        <p class="header-text">
+          Confidence Assessment - Please face the camera and answer naturally
+        </p>
+      </div>
+
+      <!-- Assessment Content -->
+      <div class="assessment-content">
+        <div class="instructions-box">
+          <h2 class="instructions-title">
+            <i class="fas fa-info-circle"></i> Instructions
+          </h2>
+          <div class="instructions-content">
+            <p>
+              This assessment evaluates your confidence and communication
+              skills. Please follow these guidelines:
+            </p>
+            <ul>
+              <li>Ensure your face is clearly visible and well-lit</li>
+              <li>Maintain eye contact with the camera</li>
+              <li>Speak clearly and confidently</li>
+              <li>Answer questions naturally as in a real interview</li>
+              <li>The assessment will last approximately 5 minutes</li>
+            </ul>
+            <p>
+              Click "Start Camera" when you're ready to begin. You'll see
+              questions appear below the camera.
+            </p>
+          </div>
+        </div>
+
+        <div class="camera-box">
+          <h2 class="camera-title">
+            <i class="fas fa-video"></i> Confidence Assessment
+          </h2>
+
+          <div class="video-container">
+            <video id="videoElement" autoplay playsinline></video>
+            <div class="camera-placeholder" id="cameraPlaceholder">
+              <i class="fas fa-camera"></i>
+              <h3>Camera Feed</h3>
+              <p>Click "Start Camera" to begin your confidence assessment</p>
+            </div>
+          </div>
+
+          <div class="question-prompt">
+            <p>
+              Question:
+              <span id="questionText"
+                >Tell us about a challenging project you worked on and how you
+                overcame obstacles.</span
+              >
+            </p>
+          </div>
+
+          <div class="camera-controls">
+            <button class="control-btn start-btn" id="startCameraBtn">
+              <i class="fas fa-play"></i>
+              Start Camera
+            </button>
+            <button class="control-btn stop-btn" id="stopCameraBtn" disabled>
+              <i class="fas fa-stop"></i>
+              Stop Camera
+            </button>
+            <button class="control-btn submit-btn" id="submitBtn">
+              <i class="fas fa-paper-plane"></i>
+              Submit Assessment
+            </button>
+          </div>
+
+          <div class="timer-container">
+            <i class="fas fa-clock timer-icon"></i>
+            <div class="timer-text" id="timer">05:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assessment Footer -->
+      <div class="assessment-footer">
+        <p>
+          © 2023 InterviewAI. All rights reserved. This assessment uses AI to
+          analyze confidence metrics.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Toast Notification System
+      function showToast(message, type = "info", duration = 5000) {
+        const toastContainer = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            ${
+              type === "success"
+                ? '<i class="fas fa-check-circle"></i>'
+                : type === "error"
+                ? '<i class="fas fa-exclamation-circle"></i>'
+                : '<i class="fas fa-info-circle"></i>'
+            }
+          </div>
+          <div class="toast-content">
+            <div class="toast-title">${
+              type.charAt(0).toUpperCase() + type.slice(1)
+            }</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <button class="toast-close">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Show toast with animation
+        setTimeout(() => {
+          toast.classList.add("show");
+        }, 10);
+
+        // Close toast on button click
+        const closeBtn = toast.querySelector(".toast-close");
+        closeBtn.addEventListener("click", () => {
+          toast.classList.remove("show");
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        });
+
+        // Auto-remove toast after duration
+        setTimeout(() => {
+          if (toast.classList.contains("show")) {
+            toast.classList.remove("show");
+            setTimeout(() => {
+              toast.remove();
+            }, 300);
+          }
+        }, duration);
+      }
+
+      // Test the toast notification
+      document.addEventListener('DOMContentLoaded', function() {
+        
+        
+        // show a toast when the start camera button is clicked
+        const startCameraBtn = document.getElementById("startCameraBtn");
+        startCameraBtn.addEventListener('click', function() {
+          showToast("Camera access requested. Please allow permissions.", "info");
+        });
+      });
+
+      window.onpageshow = function (event) {
+        if (event.persisted) {
+          window.location.reload(true); // Forces Django to run again
+        }
+      };
+
+      // DOM Elements
+      const video = document.getElementById("videoElement");
+      const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+      const startCameraBtn = document.getElementById("startCameraBtn");
+      const stopCameraBtn = document.getElementById("stopCameraBtn");
+      const submitBtn = document.getElementById("submitBtn");
+      const timer = document.getElementById("timer");
+      const questionText = document.getElementById("questionText");
+
+      // Timer variables
+      let timeLeft = 5 * 60; // 5 minutes
+      let timerInterval;
+
+      // Interview questions
+      const questions = [
+        "Tell us about a challenging project you worked on and how you overcame obstacles.",
+        "Describe a time when you had to work with a difficult team member. How did you handle the situation?",
+        "What is your greatest professional achievement and why are you proud of it?",
+        "How do you handle tight deadlines and multiple competing priorities?",
+        "Where do you see yourself in five years professionally?",
+      ];
+
+      let currentQuestion = 0;
+      let reportId = null;
+
+      // Start camera function
+      async function startCamera() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              facingMode: "user",
+            },
+            audio: true,
+          });
+
+          video.srcObject = stream;
+          cameraPlaceholder.style.display = "none";
+          startCameraBtn.disabled = true;
+          stopCameraBtn.disabled = false;
+
+          // Start the timer
+          startTimer();
+
+          // Show the first question
+          showNextQuestion();
+        } catch (err) {
+          console.error("Error accessing camera: ", err);
+          cameraPlaceholder.innerHTML =
+            '<i class="fas fa-exclamation-triangle"></i><h3>Camera Access Denied</h3><p>Please enable camera and microphone permissions</p>';
+          showToast("Camera access denied. Please enable permissions.", "error");
+        }
+      }
+
+      // Stop camera function
+      function stopCamera() {
+        const stream = video.srcObject;
+        if (stream) {
+          const tracks = stream.getTracks();
+          tracks.forEach((track) => track.stop());
+          video.srcObject = null;
+          cameraPlaceholder.style.display = "flex";
+          startCameraBtn.disabled = false;
+          stopCameraBtn.disabled = true;
+
+          // Stop timer
+          clearInterval(timerInterval);
+          showToast("Camera stopped", "info");
+        }
+      }
+
+      // Start timer function
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeLeft--;
+
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+
+          timer.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+
+          // Change color when time is running out
+          if (timeLeft < 60) {
+            timer.classList.add("time-warning");
+          }
+
+          // Move to next question every 60 seconds
+          if (timeLeft % 60 === 0 && timeLeft > 0) {
+            showNextQuestion();
+          }
+
+          // Auto submit when time ends
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitAssessment();
+          }
+        }, 1000);
+      }
+
+      // Show next question
+      function showNextQuestion() {
+        questionText.textContent = questions[currentQuestion];
+        currentQuestion = (currentQuestion + 1) % questions.length;
+        showToast("Next question: " + questionText.textContent, "info", 3000);
+      }
+
+      // Submit assessment
+      function submitAssessment() {
+        stopCamera();
+
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        submitBtn.disabled = true;
+
+        showToast("Assessment submitted successfully! Your results will be available in the final report.","success");
+        setTimeout(() => {
+          
+          submitData();
+          
+        }, 3000);
+      }
+
+      // Function to get CSRF token
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function submitData() {
+        const submissionData = {
+          assessment: "good",
+        };
+
+        fetch("{% url 'submit_confidence_assessment'%}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(submissionData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error("Network response was not ok.");
+          })
+          .then((data) => {
+            if (data.success) {
+              reportId = data.report_id;
+
+              submitBtn.innerHTML =
+                '<i class="fas fa-paper-plane"></i> Submit Assessment';
+              submitBtn.disabled = false;
+
+              // Reset for demo purposes
+              timeLeft = 5 * 60;
+              timer.textContent = "05:00";
+              timer.classList.remove("time-warning");
+              currentQuestion = 0;
+              window.location.href = `/interview_report/${reportId}/`;
+            } else {
+              throw new Error(data.message || "Submission failed");
+            }
+          })
+          .catch((error) => {
+            console.error("Submission error:", error);
+            showToast("An error occurred: " + error.message, "error");
+          });
+      }
+
+      // Event listeners
+      startCameraBtn.addEventListener("click", startCamera);
+      stopCameraBtn.addEventListener("click", stopCamera);
+      submitBtn.addEventListener("click", submitAssessment);
+    </script>
+  </body>
+</html>

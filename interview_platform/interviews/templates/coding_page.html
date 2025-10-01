@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Programming Test | AI Interview Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        min-height: 100vh;
+        color: #f8fafc;
+        padding: 20px;
+      }
+
+      .test-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        min-height: 90vh;
+      }
+
+      .test-header {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        padding: 25px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .test-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        z-index: 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo i {
+        font-size: 36px;
+        background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .logo h1 {
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .test-info {
+        display: flex;
+        gap: 25px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .info-box {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 16px;
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .info-icon {
+        font-size: 24px;
+        color: #c4b5fd;
+      }
+
+      .info-content h3 {
+        font-size: 14px;
+        color: #c7d2fe;
+        font-weight: 400;
+        margin-bottom: 4px;
+      }
+
+      .info-content p {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f8fafc;
+      }
+
+      .test-content {
+        display: flex;
+        flex: 1;
+        padding: 0;
+      }
+
+      .question-container {
+        flex: 1;
+        padding: 35px 40px;
+        background: rgba(30, 41, 59, 0.6);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .question-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .question-number {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .question-text h2 {
+        font-size: 24px;
+        color: #e2e8f0;
+        margin-bottom: 8px;
+      }
+
+      .question-tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tag {
+        background: rgba(67, 97, 238, 0.2);
+        color: #a5b4fc;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      .question-timer {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 16px;
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .timer-icon {
+        font-size: 28px;
+        color: #f87171;
+      }
+
+      .timer-text {
+        font-size: 22px;
+        font-weight: 700;
+        color: #f8fafc;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .question-description {
+        background: rgba(15, 23, 42, 0.5);
+        padding: 25px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        border-left: 4px solid #6366f1;
+        line-height: 1.7;
+        flex-grow: 1;
+      }
+
+      .question-description h3 {
+        color: #94a3b8;
+        margin-bottom: 15px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .question-description h3 i {
+        color: #6366f1;
+      }
+
+      .question-description p {
+        margin-bottom: 15px;
+        color: #cbd5e1;
+      }
+
+      .question-description pre {
+        background: rgba(15, 23, 42, 0.8);
+        padding: 18px;
+        border-radius: 12px;
+        overflow-x: auto;
+        margin: 20px 0;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        font-family: "Courier New", monospace;
+        color: #f8fafc;
+        line-height: 1.5;
+      }
+
+      .question-description ul {
+        padding-left: 25px;
+        margin: 15px 0;
+      }
+
+      .question-description li {
+        margin-bottom: 10px;
+        color: #cbd5e1;
+      }
+
+      .code-container {
+        flex: 1;
+        padding: 35px 40px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .code-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .code-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .code-title i {
+        color: #6366f1;
+      }
+
+      .language-selector {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 16px;
+        outline: none;
+      }
+
+      .editor-container {
+        flex: 1;
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .editor-header {
+        background: rgba(30, 41, 59, 0.9);
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .editor-title {
+        font-size: 16px;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .editor-actions {
+        display: flex;
+        gap: 15px;
+      }
+
+      .editor-btn {
+        background: rgba(67, 97, 238, 0.2);
+        color: #a5b4fc;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .editor-btn:hover {
+        background: rgba(67, 97, 238, 0.3);
+      }
+
+      .code-editor {
+        flex: 1;
+        padding: 25px;
+        font-family: "Fira Code", "Courier New", monospace;
+        font-size: 16px;
+        line-height: 1.5;
+        color: #f8fafc;
+        background: #0f172a;
+        border: none;
+        outline: none;
+        resize: none;
+        white-space: pre;
+        overflow: auto;
+      }
+
+      .code-footer {
+        background: rgba(30, 41, 59, 0.9);
+        padding: 20px 25px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .action-btns {
+        display: flex;
+        gap: 15px;
+      }
+
+      .action-btn {
+        padding: 14px 35px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        border: none;
+      }
+
+      .submit-btn:hover {
+        background: linear-gradient(135deg, #0da271, #2bbd88);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+      }
+
+      .next-btn {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+      }
+
+      .next-btn:hover {
+        background: linear-gradient(135deg, #5659e6, #7a4dee);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      }
+
+      .test-footer {
+        padding: 25px 40px;
+        background: rgba(30, 41, 59, 0.8);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .progress-text {
+        font-size: 16px;
+        color: #94a3b8;
+      }
+
+      .progress-bar {
+        width: 300px;
+        height: 10px;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        transition: width 0.5s ease;
+      }
+
+      .time-warning {
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          color: #f8fafc;
+        }
+        50% {
+          color: #f87171;
+        }
+        100% {
+          color: #f8fafc;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .test-content {
+          flex-direction: column;
+        }
+
+        .question-container {
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .test-header {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .test-info {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .question-header {
+          flex-direction: column;
+          gap: 20px;
+          align-items: flex-start;
+        }
+
+        .question-timer {
+          align-self: flex-end;
+        }
+
+        .progress-bar {
+          width: 200px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .test-header,
+        .question-container,
+        .code-container {
+          padding: 25px;
+        }
+
+        .info-box {
+          padding: 12px 18px;
+        }
+
+        .test-info {
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .question-timer {
+          padding: 12px 20px;
+          margin-top: 15px;
+        }
+
+        .question-description {
+          padding: 20px;
+        }
+
+        .action-btns {
+          width: 100%;
+          flex-direction: column;
+        }
+
+        .action-btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .test-footer {
+          flex-direction: column;
+          gap: 20px;
+          align-items: flex-start;
+        }
+
+        .progress-container {
+          width: 100%;
+        }
+
+        .progress-bar {
+          flex: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <!-- Test Header -->
+      <div class="test-header">
+        <div class="logo">
+          <i class="fas fa-robot"></i>
+          <h1>InterviewAI</h1>
+        </div>
+        <div class="test-info">
+          <div class="info-box">
+            <i class="fas fa-file-code info-icon"></i>
+            <div class="info-content">
+              <h3>Test Type</h3>
+              <p>Programming</p>
+            </div>
+          </div>
+          <div class="info-box">
+            <i class="fas fa-code info-icon"></i>
+            <div class="info-content">
+              <h3>Language</h3>
+              <p>{{request.session.language}}</p>
+            </div>
+          </div>
+          <div class="info-box">
+            <i class="fas fa-layer-group info-icon"></i>
+            <div class="info-content">
+              <h3>Difficulty</h3>
+              <p>{{request.session.difficulty_level}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Content -->
+      <div class="test-content">
+        <!-- Question Container -->
+        <div class="question-container">
+          <div class="question-header">
+            <div class="question-title">
+              <div class="question-number">1</div>
+              <div class="question-text">
+                <h2></h2>
+                <div class="question-tags">
+                  <span class="tag"></span>
+                  <span class="tag"></span>
+                  <span class="tag"></span>
+                </div>
+              </div>
+            </div>
+            <div class="question-timer">
+              <i class="fas fa-clock timer-icon"></i>
+              <div class="timer-text"></div>
+            </div>
+          </div>
+
+          <div class="question-description">
+            <h3><i class="fas fa-book"></i> Problem Description</h3>
+            <p></p>
+
+            <p></p>
+
+            <h3><i class="fas fa-example"></i> Example</h3>
+            <pre></pre>
+
+            <h3><i class="fas fa-tasks"></i> Constraints</h3>
+            <ul></ul>
+          </div>
+        </div>
+
+        <!-- Code Container -->
+        <div class="code-container">
+          <div class="code-header">
+            <h2 class="code-title">
+              <i class="fas fa-laptop-code"></i> Code Editor
+            </h2>
+          </div>
+
+          <div class="editor-container">
+            <div class="editor-header">
+              <div class="editor-title">
+                <i class="fas fa-file-code"></i>
+                solution.py
+              </div>
+              <div class="editor-actions">
+                <button class="editor-btn">
+                  <i class="fas fa-redo"></i>
+                  Reset Code
+                </button>
+                <button class="editor-btn">
+                  <i class="fas fa-copy"></i>
+                  Copy Code
+                </button>
+              </div>
+            </div>
+            <textarea class="code-editor" spellcheck="false"></textarea>
+            <div class="code-footer">
+              <div class="action-btns">
+                <button class="action-btn submit-btn">
+                  <i class="fas fa-paper-plane"></i>
+                  Submit Code
+                </button>
+                <button class="action-btn next-btn">
+                  Next Question
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Footer -->
+      <div class="test-footer">
+        <div class="progress-container">
+          <span class="progress-text"></span>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 33%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      window.onpageshow = function (event) {
+        if (event.persisted) {
+          window.location.reload(true);
+        }
+      };
+
+      // Function to get CSRF token
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      const timerText = document.querySelector(".timer-text");
+      let timeLeft = 10 * 60; // 10 minutes per question
+      let timerInterval;
+      let startTime = Date.now(); // Track test start time
+      let questionStartTime = Date.now(); // Track when question was loaded
+
+      let questions = [];
+      let currentQuestion = 0;
+      let totalQuestions = 0;
+      let userResponses = []; // Store all user responses
+
+      // Fetch coding questions from backend
+      fetch("{% url 'get_coding_questions' %}")
+        .then((response) => {
+          if (!response.ok)
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        })
+        .then((data) => {
+          questions = data;
+          totalQuestions = questions.length;
+          loadQuestion(0);
+        })
+        .catch((error) => {
+          console.error("Error fetching coding questions:", error);
+          alert("Failed to load questions. Please refresh the page.");
+        });
+
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeLeft--;
+
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+
+          timerText.textContent = `${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+          if (timeLeft < 60) {
+            timerText.classList.add("time-warning");
+          }
+
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitQuestion(true); // Auto-submit when time runs out
+          }
+        }, 1000);
+      }
+
+      function loadQuestion(index) {
+        const question = questions[index];
+        questionStartTime = Date.now(); // Reset timer for this question
+
+        document.querySelector(".question-number").textContent = index + 1;
+        document.querySelector(".question-text h2").textContent =
+          question.title;
+
+        const tagsContainer = document.querySelector(".question-tags");
+        tagsContainer.innerHTML = "";
+        question.tags.forEach((tag) => {
+          const tagEl = document.createElement("span");
+          tagEl.className = "tag";
+          tagEl.textContent = tag;
+          tagsContainer.appendChild(tagEl);
+        });
+
+        const description = document.querySelector(".question-description");
+        description.innerHTML = `
+      <h3><i class="fas fa-book"></i> Problem Description</h3>
+      <p>${question.description}</p>
+      
+      <h3><i class="fas fa-lightbulb"></i> Example</h3>
+      <pre>${question.example}</pre>
+      
+      <h3><i class="fas fa-tasks"></i> Constraints</h3>
+      <ul>
+          ${question.constraints.map((c) => `<li>${c}</li>`).join("")}
+      </ul>
+    `;
+
+        const progressPercent = ((index + 1) / totalQuestions) * 100;
+        document.querySelector(
+          ".progress-text"
+        ).textContent = `Test Progress: ${
+          index + 1
+        }/${totalQuestions} questions`;
+        document.querySelector(
+          ".progress-fill"
+        ).style.width = `${progressPercent}%`;
+
+        // Update button text based on question position
+        const submitBtn = document.querySelector(".submit-btn");
+        if (index === totalQuestions - 1) {
+          submitBtn.innerHTML =
+            '<i class="fas fa-paper-plane"></i> Submit Final Code';
+        } else {
+          submitBtn.innerHTML =
+            '<i class="fas fa-paper-plane"></i> Submit & Next';
+        }
+
+        timeLeft = 10 * 60;
+        clearInterval(timerInterval);
+        timerText.textContent = "10:00";
+        timerText.classList.remove("time-warning");
+        startTimer();
+      }
+
+      // Submit a single question
+      function submitQuestion(isTimeout = false) {
+        const submitBtn = document.querySelector(".submit-btn");
+        const originalText = submitBtn.innerHTML;
+
+        if (!isTimeout) {
+          submitBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Processing...';
+          submitBtn.disabled = true;
+        }
+
+        const question = questions[currentQuestion];
+        const code = document.querySelector(".code-editor").value;
+        const timeTaken = Math.floor((Date.now() - questionStartTime) / 1000); // in seconds
+
+        const nextButton = document.querySelector(".next-btn");
+
+        // Save user response
+        userResponses.push({
+          question_id: question.id,
+          question_title: question.title,
+          code: code,
+          time_taken: timeTaken,
+          is_empty: code.trim() === "",
+        });
+
+        if (!isTimeout) {
+          setTimeout(() => {
+            if (currentQuestion < totalQuestions - 2) {
+              currentQuestion++;
+              loadQuestion(currentQuestion);
+              submitBtn.innerHTML = originalText;
+              nextButton.style.display = "block";
+            } else if (currentQuestion === totalQuestions - 2) {
+              currentQuestion++;
+              loadQuestion(currentQuestion);
+              submitBtn.innerHTML =
+                '<i class="fas fa-paper-plane"></i>Submit Final Code';
+              nextButton.style.display = "none";
+              // Make sure the parent is a flex container and center content
+              submitBtn.parentElement.style.display = "flex";
+              submitBtn.parentElement.style.justifyContent = "center";
+              submitBtn.parentElement.style.alignItems = "center";
+              submitBtn.parentElement.style.width = "100%";
+            } else {
+              submitAllResponses();
+            }
+            submitBtn.disabled = false;
+          }, 1000);
+        } else {
+          if (currentQuestion < totalQuestions - 1) {
+            currentQuestion++;
+            loadQuestion(currentQuestion);
+          } else {
+            submitAllResponses();
+          }
+        }
+      }
+
+      // Submit all responses to backend
+      function submitAllResponses() {
+        const submitBtn = document.querySelector(".submit-btn");
+
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Finalizing...';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+        // Calculate metrics
+        const totalTime = Math.floor((Date.now() - startTime) / 1000); // Total test time in seconds
+        const solvedCount = userResponses.filter((r) => !r.is_empty).length;
+        const avgTimePerProblem =
+          userResponses.reduce((sum, r) => sum + r.time_taken, 0) /
+          userResponses.length;
+        const solvedPercentage = (solvedCount / totalQuestions) * 100;
+
+        // Prepare data to send
+        const submissionData = {
+          responses: userResponses,
+          total_questions: totalQuestions,
+          solved_count: solvedCount,
+          total_time: totalTime,
+          avg_time_per_problem: avgTimePerProblem,
+          solved_percentage: solvedPercentage,
+          language: "{{ request.session.language }}",
+        };
+
+        // Send data to backend
+        fetch("{% url 'submit_coding_answers' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(submissionData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error("Network response was not ok.");
+          })
+          .then((data) => {
+            if (data.success) {
+              window.location.href = "{% url 'confidence_score_page' %}";
+            } else {
+              throw new Error(data.message || "Submission failed");
+            }
+          })
+          .catch((error) => {
+            console.error("Submission error:", error);
+            alert("An error occurred: " + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML =
+              '<i class="fas fa-paper-plane"></i> Try Again';
+          });
+          }, 2000);
+      }
+
+      // Event listeners
+      document.querySelector(".submit-btn").addEventListener("click", () => {
+        submitQuestion();
+      });
+
+      document.querySelector(".next-btn").addEventListener("click", () => {
+        // Save response without submitting
+        const question = questions[currentQuestion];
+        const code = document.querySelector(".code-editor").value;
+        const timeTaken = Math.floor((Date.now() - questionStartTime) / 1000);
+         question.description
+
+
+        userResponses.push({
+          question_id: question.id,
+          question_title: question.title,
+          desctiption : question.description,
+          tags : question.tags,
+          constraints : question.constraints,
+          example : question.example,
+          code: code,
+          time_taken: timeTaken,
+          is_empty: code.trim() === "",
+        });
+
+        if (currentQuestion < totalQuestions - 1) {
+          currentQuestion++;
+          loadQuestion(currentQuestion);
+        } else {
+          submitAllResponses();
+        }
+      });
+
+      // Reset code button
+      document
+        .querySelector(".editor-btn:nth-child(1)")
+        .addEventListener("click", () => {
+          if (confirm("Are you sure you want to reset your code?")) {
+            document.querySelector(".code-editor").value = "";
+          }
+        });
+
+      // Copy code button
+      document
+        .querySelector(".editor-btn:nth-child(2)")
+        .addEventListener("click", () => {
+          const codeText = document.querySelector(".code-editor");
+          codeText.select();
+          document.execCommand("copy");
+          alert("Code copied to clipboard!");
+        });
+    </script>
+  </body>
+</html>

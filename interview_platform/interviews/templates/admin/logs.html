@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Logs | InterviewAI</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-light: #818cf8;
+        --secondary: #8b5cf6;
+        --light: #f8fafc;
+        --dark: #0f172a;
+        --darker: #0b1220;
+        --gray: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --card-bg: rgba(15, 23, 42, 0.8);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--darker), #1e293b);
+        min-height: 100vh;
+        color: #f8fafc;
+        display: flex;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        width: 250px;
+        background: var(--dark);
+        height: 100vh;
+        position: fixed;
+        padding: 20px 0;
+        border-right: 1px solid var(--border);
+      }
+
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        margin-bottom: 30px;
+      }
+
+      .sidebar-brand i {
+        font-size: 28px;
+        background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-right: 10px;
+      }
+
+      .sidebar-brand h2 {
+        font-size: 22px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        margin-bottom: 5px;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: #cbd5e1;
+        text-decoration: none;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background: rgba(30, 41, 59, 0.6);
+        color: #f8fafc;
+        border-left: 3px solid var(--primary);
+      }
+
+      .sidebar-nav a i {
+        margin-right: 12px;
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 250px;
+        padding: 30px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .user-menu {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-menu img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 12px;
+        object-fit: cover;
+        border: 2px solid var(--primary);
+      }
+
+      /* Filters */
+      .filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: #f8fafc;
+      }
+
+      .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+      }
+
+      .filter-select {
+        padding: 12px 15px;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: #f8fafc;
+        min-width: 150px;
+      }
+
+      /* Content Sections */
+      .content-section {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid var(--border);
+        backdrop-filter: blur(10px);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      /* Tables */
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .table th {
+        color: var(--gray);
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .badge-info {
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--primary);
+      }
+
+      .badge-success {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+      }
+
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--warning);
+      }
+
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger);
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .pagination-item {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: rgba(30, 41, 59, 0.6);
+        color: #cbd5e1;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .pagination-item.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 80px;
+        }
+        .sidebar-brand h2,
+        .sidebar-nav span {
+          display: none;
+        }
+        .sidebar-nav a {
+          justify-content: center;
+          padding: 15px;
+        }
+        .sidebar-nav a i {
+          margin-right: 0;
+        }
+        .main-content {
+          margin-left: 80px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .filters {
+          flex-direction: column;
+        }
+        .main-content {
+          padding: 20px;
+        }
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+      }
+
+      /* Loading indicator */
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .loading i {
+        font-size: 24px;
+        color: var(--primary);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fas fa-robot"></i>
+        <h2>InterviewAI</h2>
+      </div>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="{%url 'admin_dashboard'%}"
+            ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a
+          >
+        </li>
+        <li>
+          <a href="{%url 'candidates_management'%}"
+            ><i class="fas fa-users"></i> <span>Candidates</span></a
+          >
+        </li>
+        <li>
+          <a href="{% url 'reports_management'%}"
+            ><i class="fas fa-file-alt"></i> <span>Reports</span></a
+          >
+        </li>
+        <li>
+          <a href="" class="active"
+            ><i class="fas fa-clipboard-list"></i> <span>System Logs</span></a
+          >
+        </li>
+
+        <li>
+          <a href="{% url 'mcqs_management'%}">
+            <i class="fas fa-book"></i> <span>MCQs</span>
+          </a>
+        </li>
+        <li>
+          <a href="{%url 'logout'%}"
+            ><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <h1>System Logs</h1>
+        <div class="user-menu">
+          <img src="{{request.session.admin_image}}" alt="" />
+          <div>
+            <div>{{request.session.admin_full_name}}</div>
+            <small>Super Administrator</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search logs..." />
+        </div>
+        <div class="search-box">
+          <i class="fas fa-envelope"></i>
+          <input
+            type="text"
+            id="emailFilter"
+            placeholder="Filter by email..."
+          />
+        </div>
+        <input type="date" class="filter-select" id="dateFilter" />
+        <button class="btn" id="applyFilters">
+          <i class="fas fa-filter"></i> Apply Filters
+        </button>
+        <button class="btn" id="resetFilters">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+      </div>
+
+      <!-- Logs Table -->
+      <div class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">System Logs</h2>
+          <button class="btn" id="exportPdf">
+            <i class="fas fa-download"></i> Export Logs
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table" id="logsTable">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Title</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Description</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody id="logsTableBody">
+              <!-- Logs will be populated here -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+          <i class="fas fa-spinner"></i>
+          <p>Loading logs...</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+          <!-- Pagination will be generated here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Logs data
+      let logsData = [];
+      let filteredLogs = [];
+
+      // Pagination settings
+      const itemsPerPage = 5;
+      let currentPage = 1;
+      let filterTimeout;
+
+      // Initialize the application
+      async function initializeApp() {
+        // Show loading indicator
+        document.getElementById("loadingIndicator").style.display = "block";
+
+        try {
+          // Fetch logs first
+          await fetchLogs();
+
+          // Initialize filtered logs with all logs
+          filteredLogs = [...logsData];
+
+          // Render logs and setup pagination
+          renderLogs();
+          setupPagination();
+
+          // Set up event listeners
+          setupEventListeners();
+
+          // Hide loading indicator
+          document.getElementById("loadingIndicator").style.display = "none";
+        } catch (error) {
+          document.getElementById("loadingIndicator").style.display = "none";
+          document.getElementById("logsTableBody").innerHTML =
+            '<tr><td colspan="6" style="text-align: center; color: var(--danger);">Error loading logs. Please try again.</td></tr>';
+        }
+      }
+
+      // Fetch logs from server
+      async function fetchLogs() {
+        try {
+          const response = await fetch("/fetch_logs/");
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.length === 0) {
+            logsData = [];
+            return;
+          }
+
+          logsData = data.map((log) => ({
+            id: log.id,
+            title: log.title,
+            candidate: log.candidate,
+            email: log.email,
+            description: log.description,
+            datetime: log.datetime,
+          }));
+
+        } catch (error) {
+          throw error;
+        }
+      }
+
+      // Set up all event listeners
+      function setupEventListeners() {
+        document
+          .getElementById("applyFilters")
+          .addEventListener("click", applyFilters);
+        document
+          .getElementById("resetFilters")
+          .addEventListener("click", resetFilters);
+        document
+          .getElementById("exportPdf")
+          .addEventListener("click", exportToPdf);
+
+        // Auto-filtering event listeners with debounce
+        document
+          .getElementById("searchInput")
+          .addEventListener("input", function () {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(applyFilters, 300);
+          });
+
+        document
+          .getElementById("emailFilter")
+          .addEventListener("input", function () {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(applyFilters, 300);
+          });
+
+        document
+          .getElementById("dateFilter")
+          .addEventListener("change", function () {
+            applyFilters();
+          });
+
+        // Highlight active menu item
+        const currentPage = window.location.pathname.split("/").pop();
+        const menuItems = document.querySelectorAll(".sidebar-nav a");
+
+        menuItems.forEach((item) => {
+          const href = item.getAttribute("href");
+          if (href === currentPage) {
+            item.classList.add("active");
+          } else {
+            item.classList.remove("active");
+          }
+        });
+      }
+
+      // Function to render logs based on current page and filters
+      function renderLogs() {
+        const tableBody = document.getElementById("logsTableBody");
+        tableBody.innerHTML = "";
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
+
+        if (paginatedLogs.length === 0) {
+          tableBody.innerHTML =
+            '<tr><td colspan="6" style="text-align: center;">No logs found matching your criteria</td></tr>';
+          return;
+        }
+
+        paginatedLogs.forEach((log) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${log.id}</td>
+            <td>${log.title}</td>
+            <td>${log.candidate}</td>
+            <td>${log.email}</td>
+            <td>${log.description}</td>
+            <td>${log.datetime}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Function to set up pagination
+      function setupPagination() {
+        const paginationElement = document.getElementById("pagination");
+        paginationElement.innerHTML = "";
+
+        const pageCount = Math.ceil(filteredLogs.length / itemsPerPage);
+
+        if (pageCount <= 1) return;
+
+        // Previous button
+        const prevButton = document.createElement("a");
+        prevButton.href = "#";
+        prevButton.className = "pagination-item";
+        prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        if (currentPage === 1) {
+          prevButton.style.opacity = "0.5";
+          prevButton.style.pointerEvents = "none";
+        } else {
+          prevButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage--;
+            renderLogs();
+            setupPagination();
+          });
+        }
+        paginationElement.appendChild(prevButton);
+
+        // Page numbers
+        for (let i = 1; i <= pageCount; i++) {
+          const pageButton = document.createElement("a");
+          pageButton.href = "#";
+          pageButton.className =
+            "pagination-item" + (i === currentPage ? " active" : "");
+          pageButton.textContent = i;
+          pageButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage = i;
+            renderLogs();
+            setupPagination();
+          });
+          paginationElement.appendChild(pageButton);
+        }
+
+        // Next button
+        const nextButton = document.createElement("a");
+        nextButton.href = "#";
+        nextButton.className = "pagination-item";
+        nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        if (currentPage === pageCount) {
+          nextButton.style.opacity = "0.5";
+          nextButton.style.pointerEvents = "none";
+        } else {
+          nextButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage++;
+            renderLogs();
+            setupPagination();
+          });
+        }
+        paginationElement.appendChild(nextButton);
+      }
+
+      // Function to apply filters
+      function applyFilters() {
+        const searchText = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const emailFilter = document
+          .getElementById("emailFilter")
+          .value.toLowerCase();
+        const dateFilter = document.getElementById("dateFilter").value;
+
+        filteredLogs = logsData.filter((log) => {
+          // Text search across multiple fields
+          const matchesSearch =
+            searchText === "" ||
+            log.title.toLowerCase().includes(searchText) ||
+            log.candidate.toLowerCase().includes(searchText) ||
+            log.description.toLowerCase().includes(searchText) ||
+            log.id.toString().includes(searchText);
+
+          // Email filter
+          const matchesEmail =
+            emailFilter === "" || log.email.toLowerCase().includes(emailFilter);
+
+          // Date filter
+          let matchesDate = true;
+          if (dateFilter) {
+            const logDate = log.datetime.split(" ")[0];
+            matchesDate = logDate === dateFilter;
+          }
+
+          return matchesSearch && matchesEmail && matchesDate;
+        });
+
+        currentPage = 1;
+        renderLogs();
+        setupPagination();
+      }
+
+      // Function to reset filters
+      function resetFilters() {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("emailFilter").value = "";
+        document.getElementById("dateFilter").value = "";
+
+        filteredLogs = [...logsData];
+        currentPage = 1;
+        renderLogs();
+        setupPagination();
+      }
+
+      // Function to export to PDF
+      function exportToPdf() {
+        // Show loading indicator
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        loadingIndicator.style.display = "block";
+
+        // Use setTimeout to allow the UI to update before generating the PDF
+        setTimeout(() => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+
+          // Add title
+          doc.setFontSize(18);
+          doc.text("InterviewAI - System Logs", 14, 15);
+          doc.setFontSize(11);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+
+          // Prepare data for the table
+          const tableData = filteredLogs.map((log) => [
+            "#" + log.id,
+            log.title,
+            log.candidate,
+            log.email,
+            log.description,
+            log.datetime,
+          ]);
+
+          // Create the table
+          doc.autoTable({
+            head: [
+              [
+                "Log ID",
+                "Title",
+                "Candidate",
+                "Email",
+                "Description",
+                "Date & Time",
+              ],
+            ],
+            body: tableData,
+            startY: 30,
+            theme: "grid",
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [99, 102, 241] },
+          });
+
+          // Save the PDF
+          doc.save("InterviewAI_System_Logs.pdf");
+
+          // Hide loading indicator
+          loadingIndicator.style.display = "none";
+        }, 100);
+      }
+
+      // Initialize the application when DOM is loaded
+      document.addEventListener("DOMContentLoaded", initializeApp);
+    </script>
+  </body>
+</html>

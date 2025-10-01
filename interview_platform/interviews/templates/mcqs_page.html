@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCQ Test | AI Interview Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        min-height: 100vh;
+        color: #f8fafc;
+        padding: 20px;
+      }
+
+      .test-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .test-header {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        padding: 25px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .test-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        z-index: 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo i {
+        font-size: 36px;
+        background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .logo h1 {
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .timer-container {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 16px;
+        padding: 15px 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .timer-icon {
+        font-size: 28px;
+        color: #f87171;
+      }
+
+      .timer-text {
+        font-size: 22px;
+        font-weight: 700;
+        color: #f8fafc;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .timer-progress {
+        width: 200px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+
+      .timer-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #ef4444, #f87171);
+        width: 100%;
+        transition: width 1s linear;
+      }
+
+      .test-content {
+        padding: 30px 40px;
+        display: flex;
+        gap: 40px;
+      }
+
+      .questions-container {
+        flex: 1;
+      }
+
+      .question-nav {
+        background: rgba(30, 41, 59, 0.7);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .nav-title {
+        font-size: 18px;
+        color: #94a3b8;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-title i {
+        color: #818cf8;
+      }
+
+      .question-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+
+      .question-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(30, 41, 59, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .question-number:hover {
+        background: rgba(67, 97, 238, 0.2);
+        transform: translateY(-3px);
+      }
+
+      .question-number.active {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+      }
+
+      .question-number.answered {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+
+      .question-card {
+        background: rgba(30, 41, 59, 0.7);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 30px;
+      }
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .question-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .question-title span {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .question-text {
+        font-size: 18px;
+        line-height: 1.7;
+        color: #cbd5e1;
+        margin-bottom: 30px;
+        background: rgba(15, 23, 42, 0.5);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #6366f1;
+      }
+
+      .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .option {
+        display: flex;
+        gap: 15px;
+        padding: 18px 20px;
+        background: rgba(15, 23, 42, 0.5);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .option:hover {
+        background: rgba(67, 97, 238, 0.2);
+        transform: translateX(5px);
+      }
+
+      .option.selected {
+        background: rgba(67, 97, 238, 0.3);
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      }
+
+      .option input {
+        display: none;
+      }
+
+      .option label {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        cursor: pointer;
+        font-size: 17px;
+        color: #e2e8f0;
+      }
+
+      .option-marker {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        border: 2px solid #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .option.selected .option-marker {
+        background: #6366f1;
+        border-color: #6366f1;
+      }
+
+      .option.selected .option-marker::before {
+        content: "\f00c";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: white;
+        font-size: 12px;
+      }
+
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+
+      .nav-btn {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      }
+
+      .nav-btn:disabled {
+        background: #475569;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        opacity: 0.6;
+      }
+
+      .submit-section {
+        text-align: center;
+        padding: 30px 0;
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        border: none;
+        padding: 18px 50px;
+        border-radius: 14px;
+        font-size: 20px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.5);
+      }
+
+      .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+        justify-content: center;
+      }
+
+      .progress-text {
+        font-size: 16px;
+        color: #94a3b8;
+      }
+
+      .progress-bar {
+        width: 300px;
+        height: 10px;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      @media (max-width: 900px) {
+        .test-content {
+          flex-direction: column;
+          padding: 25px;
+        }
+
+        .question-grid {
+          grid-template-columns: repeat(10, 1fr);
+        }
+
+        .test-header {
+          padding: 20px;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .timer-container {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .test-header {
+          padding: 20px 15px;
+        }
+
+        .test-content {
+          padding: 20px;
+        }
+
+        .question-card {
+          padding: 20px;
+        }
+
+        .question-grid {
+          grid-template-columns: repeat(5, 1fr);
+        }
+
+        .question-title {
+          font-size: 18px;
+        }
+
+        .question-text {
+          font-size: 16px;
+          padding: 15px;
+        }
+
+        .option label {
+          font-size: 15px;
+        }
+
+        .progress-bar {
+          width: 200px;
+        }
+      }
+
+      .time-warning {
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          color: #f8fafc;
+        }
+        50% {
+          color: #f87171;
+        }
+        100% {
+          color: #f8fafc;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <!-- Test Header -->
+      <div class="test-header">
+        <div class="logo">
+          <i class="fas fa-robot"></i>
+          <h1>InterviewAI</h1>
+        </div>
+        <div class="timer-container">
+          <i class="fas fa-clock timer-icon"></i>
+          <div>
+            <div class="timer-text">20:00</div>
+            <div class="timer-progress">
+              <div class="timer-progress-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Content -->
+      <div class="test-content">
+        <!-- Question Navigation -->
+        <div class="question-nav">
+          <div class="nav-title">
+            <i class="fas fa-list-ol"></i>
+            <span>Questions Navigation</span>
+          </div>
+          <div class="question-grid" id="questionGrid">
+            <!-- This will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Questions Container -->
+        <div class="questions-container">
+          <!-- Question Card - Content will be updated by JavaScript -->
+          <div class="question-card" id="questionCard">
+            <div class="question-header">
+              <div class="question-title">
+                <span id="questionNumber">1</span>
+                <h3 id="questionCategory">Java Fundamentals</h3>
+              </div>
+              <div class="question-status">Multiple Choice</div>
+            </div>
+
+            <div class="question-text" id="questionText">
+              Which of the following is NOT a valid Java access modifier?
+            </div>
+
+            <div class="options-container" id="optionsContainer">
+              <!-- Options will be populated by JavaScript -->
+            </div>
+
+            <div class="navigation-buttons">
+              <button class="nav-btn" id="prevBtn" disabled>
+                <i class="fas fa-arrow-left"></i>
+                Previous
+              </button>
+              <button class="nav-btn" id="nextBtn">
+                Next
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress and Submit -->
+          <div class="submit-section">
+            <div class="progress-container">
+              <span class="progress-text" id="progressText"
+                >Test Progress: 1/15 questions</span
+              >
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progressFill"
+                  style="width: 7%"
+                ></div>
+              </div>
+            </div>
+            <button class="submit-btn" id="submitBtn">
+              <i class="fas fa-paper-plane"></i>
+              Submit MCQ Test
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let questions = [];
+      let startTime = Date.now(); // Track test start time
+
+      fetch("{% url 'get_mcqs' %}")
+        .then((response) => response.json())
+        .then((data) => {
+          questions = data;
+          // Reinitialize userAnswers with the correct length
+          userAnswers = new Array(questions.length).fill(null);
+          initApp();
+        });
+
+        window.onpageshow = function (event) {
+        if (event.persisted) {
+          window.location.reload(true);
+        }
+      };
+
+      // User answers and state
+      let userAnswers = [];
+      let currentQuestionIndex = 0;
+
+      // Timer functionality
+      const timerText = document.querySelector(".timer-text");
+      const progressBar = document.querySelector(".timer-progress-bar");
+      let timeLeft = 20 * 60; // 20 minutes in seconds
+      let timerInterval;
+
+      // DOM elements
+      const questionGrid = document.getElementById("questionGrid");
+      const questionNumberEl = document.getElementById("questionNumber");
+      const questionCategoryEl = document.getElementById("questionCategory");
+      const questionTextEl = document.getElementById("questionText");
+      const optionsContainer = document.getElementById("optionsContainer");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const submitBtn = document.getElementById("submitBtn");
+      const progressText = document.getElementById("progressText");
+      const progressFill = document.getElementById("progressFill");
+
+      const original = submitBtn.innerHTML;
+
+      window.onpageshow = function (event) {
+        if (event.persisted) {
+          submitBtn.innerHTML = original;
+        } else {
+          submitBtn.innerHTML = original;
+        }
+      };
+
+      // Initialize the question navigation grid
+      function initQuestionGrid() {
+        questionGrid.innerHTML = "";
+        questions.forEach((_, index) => {
+          const questionNumber = document.createElement("div");
+          questionNumber.className = "question-number";
+          questionNumber.textContent = index + 1;
+          questionNumber.addEventListener("click", () =>
+            navigateToQuestion(index)
+          );
+
+          // Add answered class only if this question has been answered
+          if (userAnswers[index] !== null) {
+            questionNumber.classList.add("answered");
+          }
+
+          questionGrid.appendChild(questionNumber);
+        });
+      }
+
+      // Update the active question in navigation
+      function updateActiveQuestion(index) {
+        const questionNumbers = document.querySelectorAll(".question-number");
+        questionNumbers.forEach((q, i) => {
+          if (i === index) {
+            q.classList.add("active");
+          } else {
+            q.classList.remove("active");
+          }
+        });
+      }
+
+      // Update answered status for a specific question
+      function updateAnsweredStatus(index) {
+        const questionNumbers = document.querySelectorAll(".question-number");
+        if (index >= 0 && index < questionNumbers.length) {
+          if (userAnswers[index] !== null) {
+            questionNumbers[index].classList.add("answered");
+          } else {
+            questionNumbers[index].classList.remove("answered");
+          }
+        }
+      }
+
+      // Render the current question
+      function renderQuestion(index) {
+        const question = questions[index];
+
+        // Update question info
+        questionNumberEl.textContent = question.id;
+        questionCategoryEl.textContent = question.category;
+        questionTextEl.textContent = question.text;
+
+        // Clear previous options
+        optionsContainer.innerHTML = "";
+
+        // Add new options
+        question.options.forEach((option) => {
+          const optionEl = document.createElement("div");
+          optionEl.className = "option";
+          if (userAnswers[index] === option.id) {
+            optionEl.classList.add("selected");
+          }
+
+          optionEl.innerHTML = `
+        <input type="radio" id="q${question.id}${option.id}" name="q${
+            question.id
+          }" 
+               ${userAnswers[index] === option.id ? "checked" : ""}>
+        <label for="q${question.id}${option.id}">
+          <span class="option-marker">${option.id}</span>
+          ${option.text}
+        </label>
+      `;
+
+          optionEl.addEventListener("click", () => {
+            userAnswers[index] = option.id;
+            document.querySelectorAll(".option").forEach((opt) => {
+              opt.classList.remove("selected");
+            });
+            optionEl.classList.add("selected");
+
+            // Update the answered status for this specific question
+            updateAnsweredStatus(index);
+
+            // Update progress
+            updateProgress();
+          });
+
+          optionsContainer.appendChild(optionEl);
+        });
+
+        // Update navigation buttons
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === questions.length - 1;
+
+        // Update active question in navigation
+        updateActiveQuestion(index);
+
+        // Update progress
+        updateProgress();
+      }
+
+      // Navigate to a specific question
+      function navigateToQuestion(index) {
+        currentQuestionIndex = index;
+        renderQuestion(index);
+      }
+
+      // Update progress bar and text
+      function updateProgress() {
+        const answeredCount = userAnswers.filter(
+          (answer) => answer !== null
+        ).length;
+        const progressPercentage = (answeredCount / questions.length) * 100;
+
+        progressText.textContent = `Test Progress: ${answeredCount}/${questions.length} questions`;
+        progressFill.style.width = `${progressPercentage}%`;
+      }
+
+      // Calculate test metrics
+      function calculateMetrics() {
+        const endTime = Date.now();
+        const timeTaken = Math.floor((endTime - startTime) / 1000); // In seconds
+
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        questions.forEach((question, index) => {
+          if (userAnswers[index] === question.correctAnswer) {
+            correctCount++;
+          } else if (userAnswers[index] !== null) {
+            incorrectCount++;
+          }
+        });
+
+        const unansweredCount =
+          questions.length - (correctCount + incorrectCount);
+        const percentage = Math.round((correctCount / questions.length) * 100);
+
+        return {
+          timeTaken,
+          correctCount,
+          incorrectCount,
+          unansweredCount,
+          percentage,
+          score: correctCount,
+        };
+      }
+
+      // Submit test function - sends detailed results to Django backend
+      function submitTest() {
+        // Show loading state immediately
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        submitBtn.disabled = true;
+
+        // Delay submission by 2 seconds
+        setTimeout(() => {
+          // Calculate test metrics
+          const metrics = calculateMetrics();
+
+          // Prepare data to send to backend
+          const submissionData = {
+            answers: [],
+            time_taken: metrics.timeTaken,
+            correct_count: metrics.correctCount,
+            incorrect_count: metrics.incorrectCount,
+            unanswered_count: metrics.unansweredCount,
+            percentage: metrics.percentage,
+            score: metrics.score,
+            total_questions: questions.length,
+          };
+
+          // Format answers for backend
+          questions.forEach((question, index) => {
+            submissionData.answers.push({
+              question_id: question.id,
+              category: question.category,
+              question_text: question.text,
+              selected_answer: userAnswers[index],
+              correct_answer: question.correctAnswer,
+              is_correct: userAnswers[index] === question.correctAnswer,
+              options: question.options.map((option) => ({
+                id: option.id,
+                text: option.text,
+              })),
+            });
+          });
+
+          // Send data to Django backend
+          fetch("{% url 'submit_mcqs' %}", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"), // Include CSRF token
+            },
+            body: JSON.stringify(submissionData),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              // Handle success response from server
+              if (data.success) {
+                window.location.href = "{% url 'coding_page' %}";
+              } else {
+                alert(
+                  "Submission failed: " + (data.message || "Unknown error")
+                );
+                submitBtn.innerHTML =
+                  '<i class="fas fa-paper-plane"></i> Submit MCQ Test';
+                submitBtn.disabled = false;
+              }
+            })
+            .catch((error) => {
+              console.error("Submission error:", error);
+              alert("An error occurred during submission. Please try again.");
+              submitBtn.innerHTML =
+                '<i class="fas fa-paper-plane"></i> Submit MCQ Test';
+              submitBtn.disabled = false;
+            });
+        }, 2000); // 2 seconds delay
+      }
+
+      // Function to get CSRF token from cookies
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      // Start the timer when page loads
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeLeft--;
+
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+
+          timerText.textContent = `${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+          // Update progress bar
+          const progress = (timeLeft / (20 * 60)) * 100;
+          progressBar.style.width = `${progress}%`;
+
+          // Change color when time is running out
+          if (timeLeft < 120) {
+            timerText.classList.add("time-warning");
+            progressBar.style.background =
+              "linear-gradient(90deg, #ef4444, #f87171)";
+          }
+
+          // Auto submit when time ends
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitTest();
+          }
+        }, 1000);
+      }
+
+      // Initialize the application
+      function initApp() {
+        startTime = Date.now(); // Set start time when app initializes
+        initQuestionGrid();
+        renderQuestion(currentQuestionIndex);
+        startTimer();
+
+        // Navigation button events
+        prevBtn.addEventListener("click", () => {
+          if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion(currentQuestionIndex);
+          }
+        });
+
+        nextBtn.addEventListener("click", () => {
+          if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion(currentQuestionIndex);
+          }
+        });
+
+        // Submit button event
+        submitBtn.addEventListener("click", submitTest);
+      }
+    </script>
+  </body>
+</html>

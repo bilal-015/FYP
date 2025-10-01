@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Setup | AI Interview Platform</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        color: #f8fafc;
+      }
+
+      .setup-container {
+        width: 100%;
+        max-width: 950px;
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        padding: 35px 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        z-index: 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo i {
+        font-size: 44px;
+        background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+
+      .logo h1 {
+        font-size: 42px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.5px;
+      }
+
+      .header p {
+        font-size: 19px;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.7;
+        color: #c7d2fe;
+        position: relative;
+        z-index: 1;
+        font-weight: 300;
+      }
+
+      .content {
+        padding: 45px;
+        display: flex;
+        flex-direction: column;
+        gap: 45px;
+      }
+
+      .setup-card {
+        background: rgba(30, 41, 59, 0.7);
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+          0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 0.3s ease;
+      }
+
+      .setup-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        font-size: 24px;
+        font-weight: 700;
+        color: #818cf8;
+      }
+
+      .card-title i {
+        font-size: 26px;
+        width: 56px;
+        height: 56px;
+        background: rgba(99, 102, 241, 0.15);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card-description {
+        font-size: 17px;
+        color: #94a3b8;
+        line-height: 1.7;
+        margin-bottom: 25px;
+        font-weight: 300;
+      }
+
+      .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+      }
+
+      .option-card {
+        background: linear-gradient(
+          145deg,
+          rgba(30, 41, 59, 0.8),
+          rgba(15, 23, 42, 0.8)
+        );
+        border-radius: 18px;
+        padding: 30px 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .option-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+      }
+
+      .option-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .option-card:hover::before {
+        opacity: 1;
+      }
+
+      .option-card.selected {
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3),
+          0 10px 25px rgba(79, 70, 229, 0.3);
+      }
+
+      .option-card.selected::before {
+        opacity: 1;
+      }
+
+      .option-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(30, 41, 59, 0.9);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 36px;
+        color: #818cf8;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .option-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #e2e8f0;
+      }
+
+      .option-desc {
+        font-size: 15px;
+        color: #94a3b8;
+        line-height: 1.6;
+        flex-grow: 1;
+      }
+
+      .difficulty-levels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .difficulty-level {
+        background: linear-gradient(
+          145deg,
+          rgba(30, 41, 59, 0.8),
+          rgba(15, 23, 42, 0.8)
+        );
+        border-radius: 18px;
+        padding: 30px 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .difficulty-level:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .difficulty-level::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+      }
+
+      .difficulty-level:hover::before {
+        opacity: 1;
+      }
+
+      .difficulty-level.selected {
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid;
+        box-shadow: 0 0 0 3px, 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .difficulty-level.selected::before {
+        opacity: 1;
+      }
+
+      .level-easy {
+        border-top-color: #10b981;
+      }
+
+      .level-easy::before {
+        background: linear-gradient(90deg, #10b981, #34d399);
+      }
+
+      .level-easy.selected {
+        border-color: rgba(16, 185, 129, 0.5);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2),
+          0 10px 25px rgba(16, 185, 129, 0.15);
+      }
+
+      .level-medium {
+        border-top-color: #f59e0b;
+      }
+
+      .level-medium::before {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      }
+
+      .level-medium.selected {
+        border-color: rgba(245, 158, 11, 0.5);
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2),
+          0 10px 25px rgba(245, 158, 11, 0.15);
+      }
+
+      .level-hard {
+        border-top-color: #ef4444;
+      }
+
+      .level-hard::before {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+      }
+
+      .level-hard.selected {
+        border-color: rgba(239, 68, 68, 0.5);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2),
+          0 10px 25px rgba(239, 68, 68, 0.15);
+      }
+
+      .level-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      .level-easy .level-title {
+        color: #34d399;
+      }
+
+      .level-medium .level-title {
+        color: #fbbf24;
+      }
+
+      .level-hard .level-title {
+        color: #f87171;
+      }
+
+      .level-desc {
+        font-size: 15px;
+        color: #94a3b8;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .level-bar {
+        height: 10px;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 5px;
+        margin: 20px 0;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+      }
+
+      .level-progress {
+        height: 100%;
+        border-radius: 5px;
+      }
+
+      .level-easy .level-progress {
+        background: linear-gradient(90deg, #10b981, #34d399);
+        width: 40%;
+      }
+
+      .level-medium .level-progress {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        width: 70%;
+      }
+
+      .level-hard .level-progress {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+        width: 100%;
+      }
+
+      .start-section {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .start-btn {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        padding: 20px 50px;
+        border-radius: 14px;
+        font-size: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        position: relative;
+        overflow: hidden;
+        transform: translateY(0);
+      }
+
+      .start-btn::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.4) 0%,
+          rgba(255, 255, 255, 0) 60%
+        );
+        transform: translate(0, 0);
+        transition: transform 0.6s ease;
+      }
+
+      .start-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
+      }
+
+      .start-btn:hover::after {
+        transform: translate(25%, 25%);
+      }
+
+      .start-btn:disabled {
+        background: linear-gradient(135deg, #475569, #64748b);
+        cursor: not-allowed;
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .start-btn:disabled:hover::after {
+        transform: translate(0, 0);
+      }
+
+      .start-btn i {
+        font-size: 26px;
+        transition: transform 0.3s ease;
+      }
+
+      .start-btn:hover i {
+        transform: scale(1.2);
+      }
+
+      .info-text {
+        margin-top: 20px;
+        color: #94a3b8;
+        font-size: 16px;
+        font-weight: 300;
+      }
+
+      /* Selection indicator */
+      .selected-indicator {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+      }
+
+      .option-card.selected .selected-indicator,
+      .difficulty-level.selected .selected-indicator {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* New styles for topic selection */
+      .topics-container {
+        display: none;
+        background: rgba(30, 41, 59, 0.7);
+        border-radius: 20px;
+        padding: 25px;
+        margin-top: 20px;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+          0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .topics-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #818cf8;
+        margin-bottom: 20px;
+      }
+
+      .topics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .topic-checkbox {
+        display: none;
+      }
+
+      .topic-label {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: linear-gradient(
+          145deg,
+          rgba(30, 41, 59, 0.8),
+          rgba(15, 23, 42, 0.8)
+        );
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .topic-label:hover {
+        background: rgba(30, 41, 59, 0.9);
+        transform: translateY(-3px);
+      }
+
+      .topic-checkbox:checked + .topic-label {
+        background: rgba(30, 41, 59, 0.9);
+        border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      }
+
+      .topic-checkbox:checked + .topic-label::after {
+        content: "✓";
+        margin-left: auto;
+        color: #818cf8;
+        font-weight: bold;
+      }
+
+      .topic-count {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #94a3b8;
+      }
+
+      .topic-error {
+        margin-top: 10px;
+        display: none;
+      }
+
+      /* MCQ Count Input */
+      .mcq-count-container {
+        display: none;
+        background: rgba(30, 41, 59, 0.7);
+        border-radius: 20px;
+        padding: 25px;
+        margin-top: 20px;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+          0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .mcq-count-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #818cf8;
+        margin-bottom: 20px;
+      }
+
+      .mcq-input-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .mcq-input-container label {
+        font-size: 16px;
+        color: #e2e8f0;
+        font-weight: 500;
+      }
+
+      .mcq-input {
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.8);
+        color: #e2e8f0;
+        font-size: 16px;
+        width: 100px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .mcq-input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      }
+
+      .mcq-info {
+        font-size: 14px;
+        color: #94a3b8;
+      }
+
+      .mcq-error {
+        color: #f87171;
+        margin-top: 10px;
+        display: none;
+      }
+
+      /* Question source selection */
+      .source-options {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .source-option {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        background: linear-gradient(
+          145deg,
+          rgba(30, 41, 59, 0.8),
+          rgba(15, 23, 42, 0.8)
+        );
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .source-option:hover {
+        background: rgba(30, 41, 59, 0.9);
+        transform: translateY(-3px);
+      }
+
+      .source-option.selected {
+        background: rgba(30, 41, 59, 0.9);
+        border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+      }
+
+      /* Success Modal Styles */
+      .success-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .success-modal-content {
+        background: rgba(30, 41, 59, 0.9);
+        border-radius: 24px;
+        padding: 50px;
+        text-align: center;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        position: relative;
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #94a3b8;
+        font-size: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .close-modal:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #e2e8f0;
+        transform: scale(1.1);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .content {
+          padding: 35px;
+        }
+
+        .setup-card {
+          padding: 30px;
+        }
+
+        .options-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+        }
+
+        .difficulty-levels {
+          grid-template-columns: 1fr;
+        }
+
+        .logo h1 {
+          font-size: 36px;
+        }
+
+        .header p {
+          font-size: 17px;
+        }
+
+        .topics-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .source-options {
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .header {
+          padding: 30px 25px;
+        }
+
+        .content {
+          padding: 25px;
+          gap: 35px;
+        }
+
+        .setup-card {
+          padding: 25px;
+        }
+
+        .options-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .card-title {
+          font-size: 22px;
+        }
+
+        .logo h1 {
+          font-size: 32px;
+        }
+
+        .logo i {
+          font-size: 38px;
+        }
+
+        .header p {
+          font-size: 16px;
+        }
+
+        .start-btn {
+          width: 100%;
+          padding: 18px;
+          font-size: 18px;
+        }
+
+        .topics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .success-modal-content {
+          padding: 30px 20px;
+        }
+
+        .close-modal {
+          top: 10px;
+          right: 10px;
+          width: 35px;
+          height: 35px;
+        }
+      }
+
+      /* Animation for cards */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .setup-card:nth-child(1) {
+        animation: fadeIn 0.6s ease forwards;
+      }
+
+      .setup-card:nth-child(2) {
+        animation: fadeIn 0.8s ease forwards;
+      }
+
+      .start-section {
+        animation: fadeIn 1s ease forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="setup-container">
+      <div class="header">
+        <div class="logo">
+          <i class="fas fa-robot"></i>
+          <h1>InterviewAI</h1>
+        </div>
+        <p>
+          Configure your interview settings below to get started with a
+          personalized mock interview experience
+        </p>
+      </div>
+
+      <div class="content">
+        <!-- Language Selection -->
+        <div class="setup-card">
+          <div class="card-title">
+            <i class="fas fa-code"></i>
+            <h2>Choose Your Area of Expertise</h2>
+          </div>
+          <p class="card-description">
+            Select the domain or technology you want to be interviewed on.
+            Questions will be tailored based on your selection.
+          </p>
+
+          <div class="options-grid">
+            <div class="option-card" data-lang="java">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fab fa-java"></i>
+              </div>
+              <h3 class="option-title">Java</h3>
+              <p class="option-desc">
+                Core Java, OOP, Collections, Data Structures
+              </p>
+            </div>
+
+            <div class="option-card" data-lang="python">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fab fa-python"></i>
+              </div>
+              <h3 class="option-title">Python</h3>
+              <p class="option-desc">Python syntax, Data structures, OOPs</p>
+            </div>
+
+            <div class="option-card" data-lang="c++">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fas fa-copyright"></i>
+              </div>
+              <h3 class="option-title">C++</h3>
+              <p class="option-desc">
+                OOP, Pointers, Memory Management, File Handling etc.
+              </p>
+            </div>
+
+            <!-- OOP Card -->
+            <div class="option-card" data-lang="oop">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fas fa-cubes"></i>
+              </div>
+              <h3 class="option-title">OOP</h3>
+              <p class="option-desc">
+                Classes, Objects, Inheritance, Polymorphism, Abstraction
+              </p>
+            </div>
+
+            <!-- Data Structures Card -->
+            <div class="option-card" data-lang="datastructures">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fas fa-project-diagram"></i>
+              </div>
+              <h3 class="option-title">Data Structures</h3>
+              <p class="option-desc">
+                Arrays, Linked Lists, Stacks, Queues, Trees, Graphs
+              </p>
+            </div>
+
+            <div class="option-card" data-lang="networking">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fas fa-network-wired"></i>
+              </div>
+              <h3 class="option-title">Networking</h3>
+              <p class="option-desc">
+                Computer Networks, Protocols, OSI Model, Security
+              </p>
+            </div>
+
+            <div class="option-card" data-lang="cybersecurity">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="option-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3 class="option-title">Cybersecurity</h3>
+              <p class="option-desc">
+                Ethical Hacking, Cryptography, Network Security, Risk Management
+              </p>
+            </div>
+          </div>
+
+          <!-- Topic Selection (initially hidden) -->
+          <div class="topics-container" id="topicsContainer">
+            <h3 class="topics-title">Select Topics (max 8)</h3>
+            <div class="topics-grid" id="topicsGrid">
+              <!-- Topics will be populated by JavaScript -->
+            </div>
+            <p class="topic-count" id="topicCount">0/8 topics selected</p>
+            <p class="topic-error" id="topicError">
+              Please select at least one topic to continue
+            </p>
+          </div>
+
+          <!-- MCQ Count Input (initially hidden) -->
+          <div class="mcq-count-container" id="mcqCountContainer">
+            <h3 class="mcq-count-title">Number of MCQs</h3>
+            <div class="mcq-input-container">
+              <label for="mcqCount">Number of Questions:</label>
+              <input 
+                type="number" 
+                id="mcqCount" 
+                class="mcq-input" 
+                min="5" 
+                value="5"
+                step="1"
+              >
+            </div>
+            <p class="mcq-info" id="mcqInfo">Minimum: 5, Maximum: 5 (based on selected topics)</p>
+            <p class="mcq-error" id="mcqError">
+              Please enter a valid number of MCQs
+            </p>
+          </div>
+        </div>
+
+        <!-- Difficulty Level -->
+        <div class="setup-card">
+          <div class="card-title">
+            <i class="fas fa-chart-line"></i>
+            <h2>Select Difficulty Level</h2>
+          </div>
+          <p class="card-description">
+            Choose the challenge level that matches your experience and
+            preparation.
+          </p>
+
+          <div class="difficulty-levels">
+            <div class="difficulty-level level-easy" data-level="easy">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <h3 class="level-title">Beginner</h3>
+              <p class="level-desc">
+                Fundamental concepts, basic syntax, entry-level questions
+              </p>
+              <div class="level-bar">
+                <div class="level-progress"></div>
+              </div>
+              <p>
+                <i class="fas fa-user-graduate"></i> Recommended for new
+                developers
+              </p>
+            </div>
+
+            <div class="difficulty-level level-medium" data-level="medium">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <h3 class="level-title">Intermediate</h3>
+              <p class="level-desc">
+                Practical scenarios, problem solving, real-world applications
+              </p>
+              <div class="level-bar">
+                <div class="level-progress"></div>
+              </div>
+              <p>
+                <i class="fas fa-briefcase"></i> Recommended for experienced
+                developers
+              </p>
+            </div>
+
+            <div class="difficulty-level level-hard" data-level="hard">
+              <div class="selected-indicator">
+                <i class="fas fa-check"></i>
+              </div>
+              <h3 class="level-title">Advanced</h3>
+              <p class="level-desc">
+                Complex problems, system design, optimization challenges
+              </p>
+              <div class="level-bar">
+                <div class="level-progress"></div>
+              </div>
+              <p>
+                <i class="fas fa-rocket"></i> Recommended for senior engineers
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Source Selection -->
+        <div class="setup-card">
+          <div class="card-title">
+            <i class="fas fa-database"></i>
+            <h2>Question Source</h2>
+          </div>
+          <p class="card-description">
+            Choose whether to use existing questions from the database or
+            generate new ones using AI.
+          </p>
+
+          <div class="source-options">
+            <div class="source-option" data-source="database">
+              <i class="fas fa-database" style="margin-right: 10px"></i>
+              Use Existing Questions
+            </div>
+            <div class="source-option" data-source="ai">
+              <i class="fas fa-robot" style="margin-right: 10px"></i>
+              Generate New Questions
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Button -->
+        <div class="start-section">
+          <button class="start-btn" id="startBtn" disabled>
+            <i class="fas fa-play-circle"></i>
+            Start Interview
+          </button>
+          <p class="info-text">
+            Please select all options to begin your interview
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Topic data for each language
+      const languageTopics = {
+        java: [
+          "data types",
+          "variables",
+          "arrays",
+          "operators",
+          "control statements",
+          "OOP concepts",
+          "classes",
+          "methods",
+          "inheritance",
+          "interfaces",
+          "packages",
+          "string handling",
+          "exception handling",
+          "multithreading",
+          "file handling",
+          "serialization",
+          "networking",
+          "collections framework",
+          "regular expressions",
+          "event handling",
+          "autoboxing",
+          "generics",
+        ],
+        python: [
+          "variables",
+          "operators",
+          "data types",
+          "loops",
+          "conditionals",
+          "strings",
+          "lists",
+          "tuples",
+          "sets",
+          "dictionaries",
+          "functions",
+          "modules",
+          "regular expressions",
+          "files",
+          "classes and objects",
+          "exception handling",
+        ],
+        "c++": [
+          "Basic Concepts",
+          "Types",
+          "Pointers",
+          "Arrays",
+          "Structures",
+          "Functions",
+          "Namespaces",
+          "Exceptions",
+          "Source Files",
+          "Classes",
+          "Operator Overloading",
+          "Derived Classes",
+          "Templates",
+          "Exception Handling",
+          "Class Hierarchies",
+          "Standard Library",
+          "Containers",
+          "Algorithms",
+          "Objects",
+          "Iterators",
+          "Strings",
+          "Streams",
+          "Numerics",
+          "Advanced C++",
+        ],
+        oop: (oop_topics = [
+          "OOP Concepts and Principles",
+          "Classes and Objects",
+          "Class Members (Fields, Methods, Constructors)",
+          "Constructors and Destructors",
+          "Access Specifiers (Public, Private, Protected)",
+          "Types of Classes (Abstract, Final, Inner, etc.)",
+          "Inheritance and Its Types",
+          "Polymorphism (Compile-time and Runtime)",
+          "Member Functions and Their Types",
+          "Static Members and Exception Handling",
+          "Object Assignment, Passing and Returning Objects",
+          "Function Overloading and Default Arguments",
+          "Upcasting and Downcasting",
+          "Memory Allocation and Variable Scope",
+          "Inbuilt Classes and Libraries",
+        ]),
+        datastructures: [
+          "Abstract Data Types (ADT)",
+          "Arrays and Operations",
+          "Stacks and Applications",
+          "Queues and Variants (Circular, Priority, Deque)",
+          "Linked Lists (Singly, Doubly, Circular, Variants)",
+          "Trees and Traversals",
+          "Binary Search Trees (BST)",
+          "Balanced Trees (AVL, Red-Black, B-Trees, B+ Trees)",
+          "Heaps (Binary, Binomial, Fibonacci, Variants)",
+          "Trie and Suffix Trees",
+          "Hashing and Hash Tables",
+          "Graphs and Representations (Adjacency List, Matrix)",
+          "Graph Types (Directed, Undirected, Directed Acyclic Graph, Multigraph, Hypergraph)",
+        ],
+        networking: [
+          "Introduction to Computer Networks",
+          "OSI Model",
+          "Security and Physical Layer",
+          "Application Layer",
+          "Transport Layer",
+          "Frame Relay",
+          "TCP/IP Protocol Suite",
+          "Basics of Networking",
+          "Network Layer",
+          "Wireless LANs, Email, and File Transfer",
+          "Point-to-Point Protocol and Error Detection",
+          "Information Networks and Technology Review",
+          "Networking Standards, Models, and Languages",
+          "SNMP (Simple Network Management Protocol)",
+          "Network Management Tools and Systems",
+        ],
+        cybersecurity: [
+          "Introduction to Ethical Hacking",
+          "Cyber Security",
+          "Cyber Laws",
+          "Security Tools",
+          "Bugs and Vulnerabilities",
+          "Security Ethics",
+          "Security Breach Scenarios",
+          "Corporate Security",
+          "Understanding Network Models for Security",
+          "Phases of Security",
+          "Cyber Security Types",
+          "Understanding Attack Vectors",
+          "Cryptography in Security",
+          "Privacy in Cyber Security",
+          "Deep Web",
+        ],
+      };
+
+      // DOM Elements
+      const languageCards = document.querySelectorAll(".option-card");
+      const difficultyLevels = document.querySelectorAll(".difficulty-level");
+      const sourceOptions = document.querySelectorAll(".source-option");
+      const startBtn = document.getElementById("startBtn");
+      const topicsContainer = document.getElementById("topicsContainer");
+      const topicsGrid = document.getElementById("topicsGrid");
+      const topicCount = document.getElementById("topicCount");
+      const topicError = document.getElementById("topicError");
+      const mcqCountContainer = document.getElementById("mcqCountContainer");
+      const mcqCountInput = document.getElementById("mcqCount");
+      const mcqInfo = document.getElementById("mcqInfo");
+      const mcqError = document.getElementById("mcqError");
+
+      // Selected values
+      let selectedLanguage = null;
+      let selectedDifficulty = null;
+      let selectedSource = null;
+      let selectedTopics = [];
+      let selectedMcqCount = 5;
+      const MAX_TOPICS = 8;
+
+      // Language selection
+      languageCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          // Remove selected class from all cards
+          languageCards.forEach((c) => c.classList.remove("selected"));
+
+          // Add selected class to clicked card
+          card.classList.add("selected");
+
+          // Store selected value
+          selectedLanguage = card.getAttribute("data-lang");
+
+          // Show topics for selected language
+          showTopics(selectedLanguage);
+
+          // Enable start button if all selections are made
+          checkSelections();
+        });
+      });
+
+      // Difficulty selection
+      difficultyLevels.forEach((level) => {
+        level.addEventListener("click", () => {
+          // Remove selected class from all levels
+          difficultyLevels.forEach((l) => l.classList.remove("selected"));
+
+          // Add selected class to clicked level
+          level.classList.add("selected");
+
+          // Store selected value
+          selectedDifficulty = level.getAttribute("data-level");
+
+          // Enable start button if all selections are made
+          checkSelections();
+        });
+      });
+
+      // Source selection
+      sourceOptions.forEach((option) => {
+        option.addEventListener("click", () => {
+          // Remove selected class from all options
+          sourceOptions.forEach((o) => o.classList.remove("selected"));
+
+          // Add selected class to clicked option
+          option.classList.add("selected");
+
+          // Store selected value
+          selectedSource = option.getAttribute("data-source");
+
+          // Enable start button if all selections are made
+          checkSelections();
+        });
+      });
+
+      // MCQ Count input validation
+      mcqCountInput.addEventListener("input", () => {
+        let value = parseInt(mcqCountInput.value);
+        
+        if (isNaN(value) || value < 5) {
+          value = 5;
+        }
+        
+        const maxMcqs = selectedTopics.length * 5;
+        if (value > maxMcqs) {
+          value = maxMcqs;
+        }
+        
+        mcqCountInput.value = value;
+        selectedMcqCount = value;
+        
+        // Update info text
+        updateMcqInfo();
+        
+        // Enable start button if all selections are made
+        checkSelections();
+      });
+
+      // Show topics for selected language
+      function showTopics(language) {
+        // Clear previous topics
+        topicsGrid.innerHTML = "";
+        selectedTopics = [];
+        topicCount.textContent = "0/8 topics selected";
+        topicError.style.display = "none";
+
+        // Reset MCQ count
+        mcqCountInput.value = 5;
+        selectedMcqCount = 5;
+        
+        // Show topics container
+        topicsContainer.style.display = "block";
+        
+        // Hide MCQ count container initially
+        mcqCountContainer.style.display = "none";
+
+        // Add topics for the selected language
+        languageTopics[language].forEach((topic) => {
+          const topicId = `topic-${topic.replace(/\s+/g, "-").toLowerCase()}`;
+
+          const topicElement = document.createElement("div");
+          topicElement.innerHTML = `
+                    <input type="checkbox" id="${topicId}" class="topic-checkbox" value="${topic}">
+                    <label for="${topicId}" class="topic-label">${topic}</label>
+                `;
+
+          topicsGrid.appendChild(topicElement);
+
+          // Add event listener to the checkbox
+          const checkbox = topicElement.querySelector(".topic-checkbox");
+          checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+              if (selectedTopics.length < MAX_TOPICS) {
+                selectedTopics.push(topic);
+              } else {
+                checkbox.checked = false;
+                alert(`You can select a maximum of ${MAX_TOPICS} topics.`);
+              }
+            } else {
+              selectedTopics = selectedTopics.filter((t) => t !== topic);
+            }
+
+            // Update topic count
+            topicCount.textContent = `${selectedTopics.length}/${MAX_TOPICS} topics selected`;
+            
+            // Show/hide MCQ count container based on topic selection
+            if (selectedTopics.length > 0) {
+              mcqCountContainer.style.display = "block";
+              updateMcqInfo();
+            } else {
+              mcqCountContainer.style.display = "none";
+            }
+
+            // Enable start button if all selections are made
+            checkSelections();
+          });
+        });
+      }
+
+      // Update MCQ info text
+      function updateMcqInfo() {
+        const maxMcqs = selectedTopics.length * 5;
+        mcqInfo.textContent = `Minimum: 5, Maximum: ${maxMcqs} (based on selected topics)`;
+        
+        // Update input max attribute
+        mcqCountInput.max = maxMcqs;
+        
+        // Adjust current value if needed
+        if (selectedMcqCount > maxMcqs) {
+          selectedMcqCount = maxMcqs;
+          mcqCountInput.value = maxMcqs;
+        }
+      }
+
+      // Check if all selections are made
+      function checkSelections() {
+        // Update topic error message color based on selection
+        if (selectedTopics.length > 0) {
+          topicError.textContent = "At least one topic selected!";
+          topicError.style.color = "#10b981";
+          topicError.style.display = "block";
+        } else if (selectedLanguage) {
+          topicError.textContent = "Please select at least one topic to continue";
+          topicError.style.color = "#f87171";
+          topicError.style.display = "block";
+        } else {
+          topicError.style.display = "none";
+        }
+        
+        // Validate MCQ count
+        const maxMcqs = selectedTopics.length * 5;
+        if (selectedMcqCount < 5 || selectedMcqCount > maxMcqs) {
+          mcqError.style.display = "block";
+        } else {
+          mcqError.style.display = "none";
+        }
+
+        // Check if all selections are valid
+        if (
+          selectedLanguage &&
+          selectedDifficulty &&
+          selectedSource &&
+          selectedTopics.length > 0 &&
+          selectedMcqCount >= 5 &&
+          selectedMcqCount <= maxMcqs
+        ) {
+          startBtn.disabled = false;
+        } else {
+          startBtn.disabled = true;
+        }
+      }
+
+      // Start interview
+      startBtn.addEventListener("click", () => {
+        // Show loading state
+        startBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Preparing Interview...';
+        startBtn.disabled = true;
+
+        // Add visual effect
+        document.querySelector(".setup-container").classList.add("processing");
+
+        // Simulate processing time
+        setTimeout(() => {
+          // Success message
+          const successMessage = document.createElement("div");
+          successMessage.className = "success-modal";
+          successMessage.innerHTML = `
+            <div class="success-modal-content">
+              <button class="close-modal">
+                <i class="fas fa-times"></i>
+              </button>
+              <div style="
+                  font-size: 48px;
+                  color: #34d399;
+                  margin-bottom: 30px;
+              ">
+                  <i class="fas fa-check-circle"></i>
+              </div>
+              <h2 style="
+                  font-size: 32px;
+                  color: #e2e8f0;
+                  margin-bottom: 20px;
+                  font-weight: 700;
+              ">
+                  Interview Ready!
+              </h2>
+              <p style="
+                  font-size: 18px;
+                  color: #94a3b8;
+                  line-height: 1.7;
+                  margin-bottom: 30px;
+              ">
+                  Starting ${selectedDifficulty} level interview in <strong style="color: #818cf8;">${selectedLanguage.toUpperCase()}</strong>
+                  <br>Using questions from: <strong style="color: #818cf8;">${
+                    selectedSource === "database"
+                      ? "Database"
+                      : "AI Generation"
+                  }</strong>
+                  <br>Topics: <strong style="color: #818cf8;">${selectedTopics.join(
+                    ", "
+                  )}</strong>
+                  <br>Number of MCQs: <strong style="color: #818cf8;">${selectedMcqCount}</strong>
+              </p>
+              <button id="redirectBtn" style="
+                  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                  color: white;
+                  border: none;
+                  padding: 16px 40px;
+                  border-radius: 14px;
+                  font-size: 18px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 12px;
+                  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+              ">
+                  <i class="fas fa-forward"></i>
+                  Proceed to Interview
+              </button>
+            </div>
+          `;
+
+          document.body.appendChild(successMessage);
+
+          // Add event listener to close button
+          const closeButton = successMessage.querySelector(".close-modal");
+          closeButton.addEventListener("click", () => {
+            document.body.removeChild(successMessage);
+            // Reset the start button
+            startBtn.innerHTML = '<i class="fas fa-play-circle"></i> Start Interview';
+            startBtn.disabled = false;
+            document.querySelector(".setup-container").classList.remove("processing");
+          });
+
+          // Add event listener to redirect button
+          document
+            .getElementById("redirectBtn")
+            .addEventListener("click", () => {
+              // Send data to backend
+              sendDataToBackend(
+                selectedLanguage,
+                selectedDifficulty,
+                selectedTopics,
+                selectedSource,
+                selectedMcqCount
+              );
+
+              // Redirect to interview page
+              window.location.href = "{% url 'mcqs_page'%}";
+            });
+        }, 1500);
+      });
+
+      function sendDataToBackend(language, difficulty, topics, source, mcqCount) {
+        fetch("{% url 'store_interview_setup' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({
+            language: language,
+            difficulty: difficulty,
+            topics: topics,
+            source: source,
+            mcq_count: mcqCount
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Response from backend:", data);
+            // Do something with response, like redirect or show message
+          })
+          .catch((error) => {
+            console.error("Error sending data:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
