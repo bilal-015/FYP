@@ -324,6 +324,54 @@
         border-left-color: var(--danger);
       }
 
+      /* Scraping Section */
+      .scraping-controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .scraping-results {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 15px;
+        background: rgba(30, 41, 59, 0.4);
+      }
+
+      .scraped-item {
+        padding: 15px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .scraped-item:last-child {
+        border-bottom: none;
+      }
+
+      .scraped-item-content {
+        flex: 1;
+      }
+
+      .scraped-item-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .code-snippet {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        border-radius: 6px;
+        margin: 10px 0;
+        font-family: monospace;
+        font-size: 13px;
+        white-space: pre-wrap;
+      }
+
       /* Responsive */
       @media (max-width: 992px) {
         .sidebar {
@@ -361,6 +409,9 @@
         }
         .options-container {
           grid-template-columns: 1fr;
+        }
+        .scraping-controls {
+          flex-direction: column;
         }
       }
     </style>
@@ -419,155 +470,207 @@
         </div>
       </div>
 
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" data-tab="manual">Add MCQ Manually</div>
+        <div class="tab" data-tab="scraping">Web Scraping</div>
+      </div>
+
       <!-- Manual MCQ Entry -->
-      <div class="content-section">
-        <div class="section-header">
-          <h2 class="section-title">Add New MCQ</h2>
+      <div class="tab-content active" id="manual-tab">
+        <div class="content-section">
+          <div class="section-header">
+            <h2 class="section-title">Add New MCQ</h2>
+          </div>
+          <form id="mcqForm">
+            <div class="form-group">
+              <label class="form-label" for="question">Question</label>
+              <textarea
+                class="form-control"
+                id="question"
+                name="question"
+                placeholder="Enter the question text..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="code_part"
+                >Code Part (Optional)</label
+              >
+              <textarea
+                class="form-control"
+                id="code_part"
+                name="code_part"
+                placeholder="Enter any code snippet related to the question..."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Options</label>
+              <div class="options-container">
+                <div class="option-item">
+                  <div class="option-header">
+                    <span class="option-label">Option A</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="option_a"
+                    placeholder="Enter option A"
+                    required
+                  />
+                </div>
+                <div class="option-item">
+                  <div class="option-header">
+                    <span class="option-label">Option B</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="option_b"
+                    placeholder="Enter option B"
+                    required
+                  />
+                </div>
+                <div class="option-item">
+                  <div class="option-header">
+                    <span class="option-label">Option C</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="option_c"
+                    placeholder="Enter option C"
+                    required
+                  />
+                </div>
+                <div class="option-item">
+                  <div class="option-header">
+                    <span class="option-label">Option D</span>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="option_d"
+                    placeholder="Enter option D"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label" for="correct_answer"
+                  >Correct Answer</label
+                >
+                <select
+                  class="form-control"
+                  id="correct_answer"
+                  name="correct_answer"
+                  required
+                >
+                  <option value="">Select Correct Answer</option>
+                  <option value="A">Option A</option>
+                  <option value="B">Option B</option>
+                  <option value="C">Option C</option>
+                  <option value="D">Option D</option>
+                </select>
+              </div>
+              <div class="form-col">
+                <label class="form-label" for="domain">Domain</label>
+                <select class="form-control" id="domain" name="domain" required>
+                  <option value="">Select Domain</option>
+                  <option value="Python">Python</option>
+                  <option value="Java">Java</option>
+                  <option value="C++">C++</option>
+                  <option value="OOP">Object Oriented Programming</option>
+                  <option value="Data Structures">Data Structures</option>
+                  <option value="Networking">Networking</option>
+                  <option value="Cyber Security">Cyber Security</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label" for="topic">Topic</label>
+                <select class="form-control" id="topic" name="topic" required>
+                  <option value="">Select Domain First</option>
+                  <!-- Topics will be populated based on domain selection -->
+                </select>
+              </div>
+              <div class="form-col">
+                <label class="form-label" for="difficulty">Difficulty</label>
+                <select
+                  class="form-control"
+                  id="difficulty"
+                  name="difficulty"
+                  required
+                >
+                  <option value="">Select Difficulty</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn" id="submitBtn">
+                <i class="fas fa-plus"></i> Add MCQ
+              </button>
+              <button type="button" class="btn btn-secondary" id="clearForm">
+                <i class="fas fa-eraser"></i> Clear Form
+              </button>
+            </div>
+          </form>
         </div>
-        <form id="mcqForm">
-          <div class="form-group">
-            <label class="form-label" for="question">Question</label>
-            <textarea
-              class="form-control"
-              id="question"
-              name="question"
-              placeholder="Enter the question text..."
-              required
-            ></textarea>
+      </div>
+
+      <!-- Web Scraping Tab -->
+      <div class="tab-content" id="scraping-tab">
+        <div class="content-section">
+          <div class="section-header">
+            <h2 class="section-title">Scrape MCQs from Websites</h2>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="code_part"
-              >Code Part (Optional)</label
+            <label class="form-label" for="scrapingDomain"
+              >Select Domain to Scrape</label
             >
-            <textarea
-              class="form-control"
-              id="code_part"
-              name="code_part"
-              placeholder="Enter any code snippet related to the question..."
-            ></textarea>
+            <select class="form-control" id="scrapingDomain" required>
+              <option value="">Select Domain</option>
+              <option value="Python">Python</option>
+              <option value="JavaScript">JavaScript</option>
+              <option value="Java">Java</option>
+              <option value="React">React</option>
+              <option value="Node.js">Node.js</option>
+              <option value="SQL">SQL</option>
+              <option value="Data Structures">Data Structures</option>
+              <option value="Algorithms">Algorithms</option>
+            </select>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Options</label>
-            <div class="options-container">
-              <div class="option-item">
-                <div class="option-header">
-                  <span class="option-label">Option A</span>
-                </div>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="option_a"
-                  placeholder="Enter option A"
-                  required
-                />
-              </div>
-              <div class="option-item">
-                <div class="option-header">
-                  <span class="option-label">Option B</span>
-                </div>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="option_b"
-                  placeholder="Enter option B"
-                  required
-                />
-              </div>
-              <div class="option-item">
-                <div class="option-header">
-                  <span class="option-label">Option C</span>
-                </div>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="option_c"
-                  placeholder="Enter option C"
-                  required
-                />
-              </div>
-              <div class="option-item">
-                <div class="option-header">
-                  <span class="option-label">Option D</span>
-                </div>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="option_d"
-                  placeholder="Enter option D"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-col">
-              <label class="form-label" for="correct_answer"
-                >Correct Answer</label
-              >
-              <select
-                class="form-control"
-                id="correct_answer"
-                name="correct_answer"
-                required
-              >
-                <option value="">Select Correct Answer</option>
-                <option value="A">Option A</option>
-                <option value="B">Option B</option>
-                <option value="C">Option C</option>
-                <option value="D">Option D</option>
-              </select>
-            </div>
-            <div class="form-col">
-              <label class="form-label" for="domain">Domain</label>
-              <select class="form-control" id="domain" name="domain" required>
-                <option value="">Select Domain</option>
-                <option value="Python">Python</option>
-                <option value="Java">Java</option>
-                <option value="C++">C++</option>
-                <option value="OOP">Object Oriented Programming</option>
-                <option value="Data Structures">Data Structures</option>
-                <option value="Networking">Networking</option>
-                <option value="Cyber Security">Cyber Security</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-col">
-              <label class="form-label" for="topic">Topic</label>
-              <select class="form-control" id="topic" name="topic" required>
-                <option value="">Select Domain First</option>
-                <!-- Topics will be populated based on domain selection -->
-              </select>
-            </div>
-            <div class="form-col">
-              <label class="form-label" for="difficulty">Difficulty</label>
-              <select
-                class="form-control"
-                id="difficulty"
-                name="difficulty"
-                required
-              >
-                <option value="">Select Difficulty</option>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <button type="submit" class="btn" id="submitBtn">
-              <i class="fas fa-plus"></i> Add MCQ
-            </button>
-            <button type="button" class="btn btn-secondary" id="clearForm">
-              <i class="fas fa-eraser"></i> Clear Form
+          <div class="scraping-controls">
+            <button class="btn" id="scrapeBtn" disabled>
+              <i class="fas fa-download"></i> Update MCQs from Web Scraping
             </button>
           </div>
-        </form>
+
+          <div class="scraping-results" id="scrapingResults">
+            <p class="text-center" style="color: var(--gray)">
+              Select a domain and click "Update MCQs from Web Scraping" to begin
+            </p>
+          </div>
+
+          <div class="form-group" style="text-align: right">
+            <button class="btn" id="saveAllBtn" disabled>
+              <i class="fas fa-save"></i> Save All to Database
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -580,11 +683,17 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // DOM Elements
+        const tabs = document.querySelectorAll(".tab");
+        const tabContents = document.querySelectorAll(".tab-content");
         const mcqForm = document.getElementById("mcqForm");
         const submitBtn = document.getElementById("submitBtn");
         const clearFormBtn = document.getElementById("clearForm");
+        const scrapeBtn = document.getElementById("scrapeBtn");
+        const saveAllBtn = document.getElementById("saveAllBtn");
+        const scrapingDomain = document.getElementById("scrapingDomain");
         const domainSelect = document.getElementById("domain");
         const topicSelect = document.getElementById("topic");
+        const scrapingResults = document.getElementById("scrapingResults");
         const toast = document.getElementById("toast");
         const toastMessage = document.getElementById("toastMessage");
 
@@ -592,6 +701,9 @@
         const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]")
           ? document.querySelector("[name=csrfmiddlewaretoken]").value
           : "";
+
+        // Store scraped MCQs
+        let scrapedMCQs = [];
 
         // Domain to Topics mapping
         const domainTopics = {
@@ -689,6 +801,91 @@
           ],
         };
 
+        // Demo MCQs data (will be replaced with actual scraped data)
+        const demoMCQs = [
+          {
+            Question: "What is the output of 'print(2 ** 3)' in Python?",
+            Code_Part: "print(2 ** 3)",
+            Option_A: "6",
+            Option_B: "8",
+            Option_C: "9",
+            Option_D: "5",
+            Answer: "B",
+            domain: "Python",
+            difficulty: "Easy",
+          },
+          {
+            Question:
+              "Which method is used to add an element to the end of an array in JavaScript?",
+            Code_Part: "",
+            Option_A: "push()",
+            Option_B: "pop()",
+            Option_C: "shift()",
+            Option_D: "unshift()",
+            Answer: "A",
+            domain: "JavaScript",
+            difficulty: "Easy",
+          },
+          {
+            Question: "What does the 'final' keyword mean in Java?",
+            Code_Part: "public final class MyClass { }",
+            Option_A: "The method cannot be overridden",
+            Option_B: "The variable is constant",
+            Option_C: "The class cannot be extended",
+            Option_D: "All of the above",
+            Answer: "D",
+            domain: "Java",
+            difficulty: "Medium",
+          },
+          {
+            Question:
+              "Which data structure uses LIFO (Last In First Out) principle?",
+            Code_Part: "",
+            Option_A: "Queue",
+            Option_B: "Stack",
+            Option_C: "Array",
+            Option_D: "Linked List",
+            Answer: "B",
+            domain: "Data Structures",
+            difficulty: "Easy",
+          },
+          {
+            Question: "What is the time complexity of binary search?",
+            Code_Part: "",
+            Option_A: "O(1)",
+            Option_B: "O(n)",
+            Option_C: "O(log n)",
+            Option_D: "O(n log n)",
+            Answer: "C",
+            domain: "Algorithms",
+            difficulty: "Medium",
+          },
+        ];
+
+        // Tab switching functionality
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", function () {
+            const tabId = this.getAttribute("data-tab");
+
+            // Update active tab
+            tabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+
+            // Show corresponding content
+            tabContents.forEach((content) => {
+              content.classList.remove("active");
+              if (content.id === `${tabId}-tab`) {
+                content.classList.add("active");
+              }
+            });
+          });
+        });
+
+        // Enable/disable scrape button based on domain selection
+        scrapingDomain.addEventListener("change", function () {
+          scrapeBtn.disabled = !this.value;
+        });
+
         // Populate topics based on selected domain
         domainSelect.addEventListener("change", function () {
           const selectedDomain = this.value;
@@ -784,6 +981,260 @@
           }
         });
 
+        // Web scraping functionality
+        scrapeBtn.addEventListener("click", async function () {
+          const selectedDomain = scrapingDomain.value;
+          if (!selectedDomain) {
+            showToast("Please select a domain first", true);
+            return;
+          }
+
+          // Disable button during scraping
+          scrapeBtn.disabled = true;
+          scrapeBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Scraping...';
+
+          showToast(`Scraping ${selectedDomain} MCQs from websites...`);
+
+          try {
+            // Call Django backend to scrape MCQs with the selected domain
+            const response = await fetch("/scrape_mcqs/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+              },
+              body: JSON.stringify({ domain: selectedDomain }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              if (result.success) {
+                scrapedMCQs = result.mcqs;
+                displayScrapedMCQs(scrapedMCQs);
+                showToast(
+                  `Scraping completed! Found ${result.mcqs.length} MCQs.`
+                );
+              } else {
+                showToast(result.message || "Error scraping MCQs", true);
+              }
+            } else {
+              showToast(result.message || "Server error occurred", true);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            // For demo purposes, show the demo MCQs if the API call fails
+            scrapedMCQs = demoMCQs.filter(
+              (mcq) => mcq.domain === selectedDomain
+            );
+            if (scrapedMCQs.length === 0) {
+              // If no demo MCQs for the selected domain, show all demo MCQs
+              scrapedMCQs = demoMCQs;
+            }
+            displayScrapedMCQs(scrapedMCQs);
+            showToast(
+              `Demo mode: Showing ${scrapedMCQs.length} sample MCQs for ${selectedDomain}`
+            );
+          } finally {
+            // Re-enable scrape button
+            scrapeBtn.disabled = false;
+            scrapeBtn.innerHTML =
+              '<i class="fas fa-download"></i> Update MCQs from Web Scraping';
+          }
+        });
+
+        // Display scraped MCQs in the correct format
+        function displayScrapedMCQs(mcqs) {
+          scrapingResults.innerHTML = "";
+
+          if (!mcqs || mcqs.length === 0) {
+            scrapingResults.innerHTML =
+              '<p class="text-center" style="color: var(--gray);">No MCQs found for this domain</p>';
+            saveAllBtn.disabled = true;
+            return;
+          }
+
+          mcqs.forEach((mcq, index) => {
+            const mcqElement = document.createElement("div");
+            mcqElement.className = "scraped-item";
+            mcqElement.innerHTML = `
+                              <div class="scraped-item-content">
+                                  <strong>${index + 1}. ${mcq.Question}</strong>
+                                  ${
+                                    mcq.Code_Part
+                                      ? `<div class="code-snippet">${mcq.Code_Part}</div>`
+                                      : ""
+                                  }
+                                  <div style="font-size: 14px; margin-top: 10px;">
+                                      <div><strong>A:</strong> ${
+                                        mcq.Option_A
+                                      }</div>
+                                      <div><strong>B:</strong> ${
+                                        mcq.Option_B
+                                      }</div>
+                                      <div><strong>C:</strong> ${
+                                        mcq.Option_C
+                                      }</div>
+                                      <div><strong>D:</strong> ${
+                                        mcq.Option_D
+                                      }</div>
+                                      <div style="margin-top: 8px; color: var(--success);"><strong>Correct Answer:</strong> ${
+                                        mcq.Answer
+                                      }</div>
+                                      <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">
+                                          Domain: ${
+                                            mcq.domain || scrapingDomain.value
+                                          } | Difficulty: ${
+              mcq.difficulty || "Not specified"
+            }
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="scraped-item-actions">
+                                  <button class="btn save-scraped" data-index="${index}"><i class="fas fa-save"></i> Save</button>
+                              </div>
+                          `;
+            scrapingResults.appendChild(mcqElement);
+          });
+
+          saveAllBtn.disabled = false;
+
+          // Add event listeners to save buttons
+          document.querySelectorAll(".save-scraped").forEach((button) => {
+            button.addEventListener("click", async function () {
+              const mcqIndex = this.getAttribute("data-index");
+              const mcq = scrapedMCQs[mcqIndex];
+
+              // Disable button during save
+              this.disabled = true;
+              this.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+              try {
+                // Send MCQ to Django backend
+                const response = await fetch("/add_mcq_to_database/", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                  },
+                  body: JSON.stringify({
+                    question: mcq.Question,
+                    code_part: mcq.Code_Part || "",
+                    option_a: mcq.Option_A,
+                    option_b: mcq.Option_B,
+                    option_c: mcq.Option_C,
+                    option_d: mcq.Option_D,
+                    answer: mcq.Answer,
+                    domain: mcq.domain || scrapingDomain.value,
+                    difficulty: mcq.difficulty || "Medium",
+                  }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                  showToast("MCQ saved successfully!");
+                  // Remove from scraped list
+                  this.closest(".scraped-item").remove();
+
+                  if (scrapingResults.children.length === 0) {
+                    scrapingResults.innerHTML =
+                      '<p class="text-center" style="color: var(--gray);">All MCQs have been saved</p>';
+                    saveAllBtn.disabled = true;
+                  }
+                } else {
+                  showToast(result.message || "Error saving MCQ", true);
+                  // Re-enable button on error
+                  this.disabled = false;
+                  this.innerHTML = '<i class="fas fa-save"></i> Save';
+                }
+              } catch (error) {
+                console.error("Error:", error);
+                showToast("Network error occurred. Please try again.", true);
+                // Re-enable button on error
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-save"></i> Save';
+              }
+            });
+          });
+        }
+
+        // Save all scraped MCQs
+        saveAllBtn.addEventListener("click", async function () {
+          const scrapedItems = document.querySelectorAll(".scraped-item");
+          if (scrapedItems.length === 0) return;
+
+          // Disable button during save
+          saveAllBtn.disabled = true;
+          saveAllBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+          let savedCount = 0;
+          let errorCount = 0;
+
+          // Save each MCQ individually
+          for (let i = 0; i < scrapedMCQs.length; i++) {
+            const mcq = scrapedMCQs[i];
+
+            try {
+              // Send MCQ to Django backend
+              const response = await fetch("/add_mcq_to_database/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify({
+                  question: mcq.Question,
+                  code_part: mcq.Code_Part || "",
+                  option_a: mcq.Option_A,
+                  option_b: mcq.Option_B,
+                  option_c: mcq.Option_C,
+                  option_d: mcq.Option_D,
+                  answer: mcq.Answer,
+                  domain: mcq.domain || scrapingDomain.value,
+                  difficulty: mcq.difficulty || "Medium",
+                }),
+              });
+
+              const result = await response.json();
+
+              if (response.ok && result.success) {
+                savedCount++;
+              } else {
+                errorCount++;
+              }
+            } catch (error) {
+              console.error("Error:", error);
+              errorCount++;
+            }
+          }
+
+          // Show result message
+          if (errorCount === 0) {
+            showToast(`All ${savedCount} MCQs saved successfully!`);
+          } else {
+            showToast(
+              `Saved ${savedCount} MCQs. ${errorCount} errors occurred.`,
+              errorCount > 0
+            );
+          }
+
+          // Clear the scraped results
+          scrapingResults.innerHTML =
+            '<p class="text-center" style="color: var(--gray);">All MCQs have been saved</p>';
+
+          // Reset button
+          saveAllBtn.disabled = true;
+          saveAllBtn.innerHTML =
+            '<i class="fas fa-save"></i> Save All to Database';
+
+          // Clear the scraped data
+          scrapedMCQs = [];
+        });
+
         // Show toast notification
         function showToast(message, isError = false) {
           toastMessage.textContent = message;
@@ -801,3 +1252,4 @@
     </script>
   </body>
 </html>
+

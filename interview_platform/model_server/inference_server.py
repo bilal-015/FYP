@@ -7,7 +7,7 @@ import torch
 # ---------------------------
 # Load model once at startup
 # ---------------------------
-MODEL_DIR = "D:\\FYP\\CloneRepo\\FYP\\middleware_flan_3t5_base" 
+MODEL_DIR = "D:\\FYP\\models\\mcqs_model\\middleware_flan_3t5_base" 
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, use_fast=True)
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_DIR)
