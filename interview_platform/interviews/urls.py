@@ -79,6 +79,7 @@ urlpatterns = [
 
     path('mcqs_management/', views.mcqs_management, name='mcqs_management'),
     path('add_mcq_to_database/', views.add_mcq_to_database, name='add_mcq_to_database'),
+    path('scrape_mcqs/', views.scrape_mcqs, name='scrape_mcqs'),
 
 
 ]

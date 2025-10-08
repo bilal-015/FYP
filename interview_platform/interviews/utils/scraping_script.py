@@ -25,6 +25,9 @@ class MCQScraper:
         a_tags = div.find_elements(By.TAG_NAME, "a")
         hrefs = [a.get_attribute("href") for a in a_tags if a.get_attribute("href")]
         print(f"✅ Found {len(hrefs)} links")
+        for link in hrefs:
+            print(link)
+        hrefs = hrefs[:3]  # Limit to first 3 links for testing
         return hrefs
 
     def scrape_mcqs(self, hrefs: list) -> pd.DataFrame:
@@ -167,11 +170,14 @@ class MCQScraper:
                 "Explanation": explanation
             })
 
+            # print(df.head(3))
             all_dataframes.append(df)
             print(f"✅ Data scraped from URL {idx + 1}: {url}")
 
         # Combine & return DataFrame
         final_df = pd.concat(all_dataframes, ignore_index=True)
+        print(len(final_df), "total questions scraped.")
+        print(final_df.shape, "final DataFrame shape.")
         return final_df
 
     def close(self):
@@ -181,19 +187,3 @@ class MCQScraper:
 
 
 
-if __name__ == "__main__":
-    scraper = MCQScraper(driver_path="D:\\FYP\\datasets\\chromedriver-win64\\chromedriver.exe")
-
-    # Step 1: Get all links
-    hrefs = scraper.get_links("https://www.sanfoundry.com/object-oriented-programming-questions-answers-oops-features/")
-
-    # Step 2: Scrape MCQs (now returns a DataFrame instead of writing CSV)
-    df = scraper.scrape_mcqs(hrefs)
-
-    # Step 3: Work with DataFrame in memory
-    print(df.head())
-
-    # Step 4: Optionally save if needed
-    df.to_csv("newallOOPMCQs.csv", index=False)
-
-    scraper.close()

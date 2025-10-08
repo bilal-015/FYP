@@ -12,11 +12,12 @@ import pandas as pd
 from django.db.models import Avg, Count,Max, Min
 from django.core.mail import send_mail
 from .models import *
-from .utils import *
+from .util import *
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
 from django.utils import timezone
-
+from .utils.scraping_script import MCQScraper
+import pandas as pd
 
 
 
@@ -356,6 +357,8 @@ def profile(request):
 
 
 def interview_reports(request):
+    request.session["interview_Completed"] = False
+    request.session.modified = True
     user = User.objects.get(id=request.session["candidate_id"], user_type="candidate")
     reports = InterviewReport.objects.filter(user=user).order_by("-date").values(
     "report_id", "date", "technology", "difficulty", "overall_score"
@@ -404,7 +407,7 @@ def mcqs_page(request):
     return render(request, 'mcqs_page.html')
 
 
-@csrf_exempt  # Remove if using proper CSRF handling
+@csrf_exempt  
 def submit_mcqs(request):
     if request.method == "POST":
         try:
@@ -1017,6 +1020,54 @@ def add_mcq_to_database(request):
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 
+@csrf_exempt   
+@require_POST
+def scrape_mcqs(request):
+    try:
+        data = json.loads(request.body)
+        domain = data.get("domain")
+        print(f"Requested domain for scraping: {domain}")
 
+        if not domain:
+            return JsonResponse({
+                "success": False,
+                "message": "Domain not provided."
+            }, status=400)
 
+        scraper = MCQScraper(driver_path="D:\\FYP\\datasets\\chromedriver-win64\\chromedriver.exe")
+        print("Initialized MCQScraper")
 
+        df = None
+        if domain.lower() == "python":
+            print("Scraping Python MCQs...")
+            hrefs = scraper.get_links("https://www.sanfoundry.com/python-mcqs-tuples/")
+            df = scraper.scrape_mcqs(hrefs)
+        elif domain.lower() == "java":
+            hrefs = scraper.get_links("https://www.sanfoundry.com/java-mcqs-arithmetic-operators/")
+            df = scraper.scrape_mcqs(hrefs)
+        elif domain.lower() == "c++":
+            hrefs = scraper.get_links("https://www.sanfoundry.com/c-plus-plus-interview-questions-answers-types/")
+            df = scraper.scrape_mcqs(hrefs)
+
+        if df is None or df.empty:
+            print("No MCQs scraped or DataFrame is empty")
+            return JsonResponse({
+                "success": False,
+                "message": "No MCQs found during scraping."
+            }, status=404)
+
+        print(f"Scraped {len(df)} MCQs")
+        mcqs = df.to_dict(orient="records")
+
+        return JsonResponse({
+            "success": True,
+            "mcqs": mcqs
+        }, safe=False)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            "success": False,
+            "message": f"Error occurred: {str(e)}"
+        }, status=500)
